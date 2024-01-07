@@ -1,0 +1,13 @@
+accelerate>=0.24.1
+auto-gptq==0.3.0
+deepspeed==0.8.3
+datasets>=2.10.1
+flash-attn
+jsonlines
+peft>=0.5.0
+safetensors>=0.3.1
+torch==1.13.1
+transformers==4.30.0
+fastapi==0.78.0
+uvicorn==0.17.6
+streamlit==1.29.0

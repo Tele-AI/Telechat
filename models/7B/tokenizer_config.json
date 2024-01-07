@@ -1,0 +1,10 @@
+{
+  "unk_token": "<unk>",
+  "eos_token": "<_end>",
+  "bos_token": "<_start>",
+  "pad_token": "<pad>",
+  "name_or_path": "tokenizer",
+  "special_tokens_map_file": null,
+  "tokenizer_class": "BloomTokenizerFast",
+  "padding_side": "left"
+}
