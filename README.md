@@ -5,7 +5,7 @@
 </div>
 
 <p align="center">
-🤗 <a href="https://huggingface.co/Tele-AI/Telechat-7B" target="_blank">Hugging Face</a> • 🏔 <a href="" target="_blank">MindSpore</a>️ • 💬 <a href="https://github.com/Tele-AI/Telechat/blob/master/images/wechat.jpg" target="_blank">WeChat</a>
+🤗 <a href="https://huggingface.co/Tele-AI/Telechat-7B" target="_blank">Hugging Face</a> • 🏔 <a href="https://gitee.com/mindspore/mindformers/tree/dev/research/telechat" target="_blank">MindSpore</a> • 🐾 <a href="https://gitee.com/Tele-AI/tele-chat" target="_blank">gitee</a>️ • 💬 <a href="https://github.com/Tele-AI/Telechat/blob/master/images/wechat.jpg" target="_blank">WeChat</a>
 </p>
 
 <p align="center">
@@ -19,7 +19,7 @@
 - [模型推理和部署](#模型推理和部署)
 - [模型微调](#模型微调)
 - [模型量化](#模型量化)
-- [国产GPU适配](#国产GPU适配)
+- [国产化适配](#国产化适配)
 - [声明、协议、引用](#声明协议引用)
 
 # 最新动态
@@ -647,13 +647,13 @@ TeleChat的分词算法是BBPE算法，该算法是字节级实现的分词算�
 4. 用途不同：生抽主要用于调味酱料、腌制肉类等；老抽则主要用于烹调菜肴、焖煮食材等。
 ```
 
-# 国产GPU适配
+# 国产化适配
 
-### 华为 ATLAS 300 ipro 的推理适配
+### 昇腾Atlas 300i Pro推理卡：推理适配
 
-当前星辰语义大模型已经支持了华为 ATLAS 300 ipro 的推理适配和int8量化。
-- 效果方面，完成了和基于A10卡模型量化效果对齐；
-- 性能方面，具体对比效果如下：
+当前星辰语义大模型TeleChat已支持昇腾 Atlas 300i Pro推理卡。具备int8量化能力。
+- 精度方面，int8量化精度对齐A10；
+- 性能方面，具体对比如下：
   
     | 输入输出信息                           | NPU (tokens/s)    |   GPU (tokens/s)   |    
     | ------------------------------------ | ------- | -------|
@@ -661,29 +661,39 @@ TeleChat的分词算法是BBPE算法，该算法是字节级实现的分词算�
     | 输入1000输出100                        | 13   | 24 |
     | 输入2000输出100                        | 11   | 19 |    
     | 25组case平均                           |  13  |  18 | 
-- TeleChat支持昇腾ATLAS 300 ipro推理和量化，所需的README、示例脚本已发布：[TeleChat-7B]()
+- Telechat支持基于昇腾Atlas 300i Pro进行推理并且具备int8量化能力，用户所需的推理部署指导、推理镜像下载等、已发布：[TeleChat-7B](https://gitee.com/ascend/ModelLink/tree/master/speed_infer/pytorch/examples/telechat)
 
-### 910B-Mindspore 训练推理适配
+### 昇腾Atlas 800T A2训练服务器+昇思MindSpore框架:  训练、推理适配
 
-当前星辰语义大模型已经支持了华为910B卡，基于 Mindspore 框架的模型训练和推理。
-- 效果方面，完成了和基于A100卡模型训练效果对齐，loss一致；
+当前星辰语义大模型TeleChat已经支持昇腾Atlas 800T A2训练服务器，可基于昇思MindSpore框架进行模型训练和推理。
+- 效果方面，模型训练效果对齐A100，loss基本吻合；
+
+- 性能方面，具体对比如下：
+    
+    | NAME    | performance(samples/s) | Epochs | AMP_Type |
+    | ------- |-----------------------:| ------ | -------: |
+    | 8p-GPU(A100-40G) |                   8.86 | 5    |        - |
+    | 8p-NPU  |                    7.98 | 5    |       O2 |
   
-<img src="./images/910B-pytorch训练loss对比.png" width = "300" height = "300" alt="910B-pytorch训练loss对比.png" />
+    说明：BatchSize/per-GPU = 2 , zero-stage=3
+- TeleChat支持昇腾Atlas 800T A2训练服务器，可基于昇思MindSpore框架进行模型训练，训练所需的modeling、README、脚本已发布：[TeleChat-7B-MindSpore](https://gitee.com/mindspore/mindformers/tree/dev/research/telechat)
 
-- 性能方面，具体对比效果如下：
+### 昇腾Atlas 800T A2训练服务器+PyTorch框架:  训练、推理适配
+
+当前星辰语义大模型TeleChat已经支持昇腾Atlas 800T A2训练服务器，可基于PyTorch 框架进行模型训练和推理。
+- 效果方面，模型训练效果对齐A100，loss基本吻合；
   
+  <img src="./images/910B-pytorch训练loss对比.png" width = "300" height = "300" alt="PyTorch训练loss对比.png" />
+
+- 性能方面，具体对比如下：
+
     | NAME    |  performance(samples(2K)/s) | Epochs | AMP_Type |
     | ------- | ---: | ------ | -------: |
     | 8p-GPU(A100-40G) | 10 | 5    |        - |
-    | 8p-NPU(910B)  |  8.49 | 5    |       O2 |
-- TeleChat支持了昇腾910B卡Mindspore版本模型训练，训练所需的modeling、readme、脚本已发布：[TeleChat-7B-Mindspore]()
+    | 8p-NPU  |  8.99 | 5    |       O2 |  
 
-### 910B-Pytorch 训练推理适配
-
-当前星辰语义大模型已经支持了华为910B卡，基于 Pytorch 框架的模型训练和推理。
-- 效果方面，完成了和基于A100卡模型训练效果对齐，loss一致；
-- 性能方面，具体对比效果如下：
-- TeleChat支持了昇腾910B卡Pytorch版本模型训练，训练所需的modeling、readme、脚本已发布：[TeleChat-7B-Pytorch](https://gitee.com/ascend/ModelZoo-PyTorch/tree/master/PyTorch/contrib/nlp/Telechat)
+    说明：BatchSize/per-GPU = 1, zero-stage=3
+- TeleChat支持昇腾Atlas 800T A2训练服务器，可基于PyTorch框架进行模型训练，训练所需的modeling、README、脚本已发布：[TeleChat-7B-PyTorch](https://gitee.com/ascend/ModelZoo-PyTorch/tree/master/PyTorch/contrib/nlp/Telechat)
 
 # 声明、协议、引用
 ### 声明
@@ -692,7 +702,7 @@ TeleChat的分词算法是BBPE算法，该算法是字节级实现的分词算�
 我们已经尽我们所能，来确保模型训练过程中使用的数据的合规性。然而，尽管我们已经做出了巨大的努力，但由于模型和数据的复杂性，仍有可能存在一些无法预见的问题。因此，如果由于使用TeleChat开源模型而导致的任何问题，包括但不限于数据安全问题、公共舆论风险，或模型被误导、滥用、传播或不当利用所带来的任何风险和问题，我们将不承担任何责任。
 
 ### 协议
-社区使用 TeleChat 模型需要遵循《[TeleChat模型社区许可协议](./TeleChat模型社区许可协议.pdf)》。TeleChat模型支持商业用途，如果您计划将 TeleChat 模型或其衍生品用于商业目的，您需要通过以下联系邮箱 TeleAI@chinatelecom.cn，提交《TeleChat模型社区许可协议》要求的申请材料。审核通过后，将特此授予您一个非排他性、全球性、不可转让、不可再许可、可撤销的商用版权许可。
+社区使用 TeleChat 模型需要遵循《[TeleChat模型社区许可协议](./TeleChat模型社区许可协议.pdf)》。TeleChat模型支持商业用途，如果您计划将 TeleChat 模型或其衍生品用于商业目的，您需要通过以下联系邮箱 tele_ai@chinatelecom.cn，提交《TeleChat模型社区许可协议》要求的申请材料。审核通过后，将特此授予您一个非排他性、全球性、不可转让、不可再许可、可撤销的商用版权许可。
 
 ### 引用
 如需引用我们的工作，请使用如下 reference:
