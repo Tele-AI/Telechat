@@ -2,39 +2,22 @@
 
 本教程旨在帮助使用者快速进行Telechat模型的部署开发，主要包括：
 
-- 资源获取
-    - 镜像下载
-    - 模型下载
-
-- 环境安装
-    - 镜像开发
-
-- 推理使用
-    - 直接推理
-
-- 模型微调
-    - LoRA微调
-    - 全参数微调
-    - 推理测试
-
-- 模型量化
-    - GPTQ量化
-    - 量化推理
-
-- 服务化
-    - API
-    - WEB
 
 ## 资源获取
 
 
 ### 镜像下载
 
-**TODO**
+为了便于大家快速上手，我们提供了可运行的环境镜像，下载地址：[镜像下载](https://cloud.189.cn/t/EbAriaQfa2mm) （访问码：2uik）
 
 ### 模型权重下载
 
-**TODO**
+
+| 模型版本  | 下载链接           |
+|---------| ----------------- |
+| 7B-FP16 | [TeleChat-FP16](https://huggingface.co/Tele-AI/Telechat-7B) |
+| 7B-int8 | [TeleChat-int8](https://huggingface.co/Tele-AI/Telechat-7B-int8) |
+| 7B-int4 | [TeleChat-int4](https://huggingface.co/Tele-AI/Telechat-7B-int4) |
 
 ## 环境配置
 

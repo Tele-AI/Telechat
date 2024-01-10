@@ -5,7 +5,7 @@
 </div>
 
 <p align="center">
-🤗 <a href="https://huggingface.co/Tele-AI/Telechat-7B" target="_blank">Hugging Face</a> • 🏔 <a href="" target="_blank">MindSpore</a>️ • 💬 <a href="./images/wechat.jpg" target="_blank">WeChat</a>
+🤗 <a href="https://huggingface.co/Tele-AI/Telechat-7B" target="_blank">Hugging Face</a> • 🏔 <a href="" target="_blank">MindSpore</a>️ • 💬 <a href="https://github.com/Tele-AI/Telechat/blob/master/images/wechat.jpg" target="_blank">WeChat</a>
 </p>
 
 <p align="center">
@@ -14,6 +14,7 @@
 
 # 目录
 - [模型介绍](#模型介绍)
+- [数据开源](#数据开源)  
 - [效果评测](#效果评测)
 - [模型推理和部署](#模型推理和部署)
 - [模型微调](#模型微调)
@@ -22,9 +23,9 @@
 - [声明、协议、引用](#声明协议引用)
 
 # 最新动态
-- 2024.1.10 开源7B版本chat模型及其量化版本
-- 2024.1.11 开源1T中文数据集
 - 2024.1月底开源12B版本模型（待开放）
+- 2024.1.11 开源1T中文数据集
+- 2024.1.10 开源7B版本chat模型及其量化版本
 
 # 模型介绍
 ### 星辰语义大模型-TeleChat
@@ -42,13 +43,15 @@
 
 |     | layer_num | hidden_size | ffn_hidden_size | head_num | 是否使用embed-layernorm |
 |-----| --------- | ----------- | --------------- | -------- | ----------------------- |
-| 7B  | 30        | 4096        | 12288           | 32       | 否                      
+| 7B  | 30        | 4096        | 12288           | 32       | 否                      |
+| 12B  | 38        | 5120        | 12288           | 32       | 否                      |
+
 ---
 
 我们开源的TeleChat模型：
 - 支持deepspeed微调，开源了基于deepspeed的训练代码，支持Zero并行显存优化，同时集成了FlashAttention2
 - 多轮能力支持。开源了多轮数据构建方式，针对多轮模型训练集成了针对多轮的mask loss训练方式，更好的聚焦多轮答案，提升问答效果。
-- 外推能力提升。开源了8K训练版本模型，采用 NTK-aware + LogN 外推方式，可以外推到32K。
+- 外推能力提升。开源了8K训练版本模型，采用NTK-aware外推和attention scaling外推方式，可以外推到96K。
 - 具备较好的长文生成能力。在工作总结、工作计划、PPT大纲、申论、招标书、邮件、方案、周报、JD写作等长文写作任务重具有较好的表现。
 
 
@@ -60,6 +63,33 @@
 | 7B-int8 | [TeleChat-int8](https://huggingface.co/Tele-AI/Telechat-7B-int8) |
 | 7B-int4 | [TeleChat-int4](https://huggingface.co/Tele-AI/Telechat-7B-int4) |
 
+**镜像下载**
+为了便于大家快速上手，我们提供了可运行的环境镜像，下载地址：[镜像下载](https://cloud.189.cn/t/EbAriaQfa2mm) （访问码：2uik）
+
+# 数据开源
+### 数据介绍
+TeleChat-PTD 是由电信星辰大模型**TeleChat**预训练语料中抽取出的的综合性大规模中文数据集。数据主要来源于网页、书籍、官方媒体等。 我们使用规则+模型的方式进行了相关的过滤，并对数据进行了相似性去重，尽可能地提取出高质量地数据。
+
+TeleChat-PTD 数据集大约公开了2.7亿条数据，数据由纯中文文本构成构成，原始大小约1TB,压缩后480G，共189个文件。数据集中已经去除了其它冗余信息。
+
+### 数据格式
+数据为jsonl格式，仅有一个字段data
+
+data: 单条处理后的预训练数据
+
+### 数据清洗
+数据清洗的工作流程主要是：规则筛选和清洗、去重、高质量数据筛选、数据安全处理这四个步骤。
+
+- 规则筛选主要是一些通用的规则和启发式规则，例如对字数长度的筛选等等;
+- 去重主要使用相似度去重来将过于相似重复的数据删除;
+- 高质量筛选主要使用了BERT、GPT2等模型对数据进行打分筛选出高质量数据;
+- 数据清洗主要是针对不良数据进行了识别和去除;
+
+### 数据下载
+
+huggingface下载地址：TODO
+
+天翼云盘下载地址：TODO
 
 # 效果评测
 TeleChat模型相比同规模模型在评测效果方面也有较好的表现，我们的评测集涵盖了包括MMLU、C-Eval、GAOKAO、AGIEval、CMMLU、 GSM8K、MATH、HumanEval、CHID等数据集，评测能力包括了自然语言理解、知识、数学计算和推理、代码生成等
@@ -68,11 +98,8 @@ TeleChat模型相比同规模模型在评测效果方面也有较好的表现，
 
 ### 通用能力
 
-- MMLU 数据集是一个全面的英文评测数据集，涵盖了 57 个学科，包括人文学科、社会科学、自然科学、初等数学、美国历史、计算机科学、法律等等。我们进行了 5-shot 测试。复现方法：
-```bash
-cd evaluation
-python evaluate_mmlu.py
-```
+- MMLU 数据集是一个全面的英文评测数据集，涵盖了 57 个学科，包括人文学科、社会科学、自然科学、初等数学、美国历史、计算机科学、法律等等。
+
 - CEVAL 数据集是一个全面的中文评估测试集，包括初中、高中、大学和专业难度级别的多项选择题，涵盖了 52 个不同的学科领域。
 
 - CMMLU 数据集同样是一个全面的中文评估测试集，涵盖了从基础学科到高级专业水平的67个主题。
@@ -91,11 +118,11 @@ python evaluate_mmlu.py
 
 ### 语言理解能力
 
-- CSL 数据集包含了 396k 篇中文论文，需要模型能够识别中文学术摘要与其关键词之间的匹配情况。
+- CSL 是一个中文论文摘要关键词匹配任务，需要模型能够识别中文学术摘要与其关键词之间的匹配情况。
 
-- CHID 数据集是一个中文阅读理解任务，要求模型选择出最恰当的成语填补中文片段中的空缺处。
+- CHID 是一个中文阅读理解任务，要求模型选择出最恰当的成语填补中文片段中的空缺处。
 
-- EPRSTMT 数据集是一个基于电子商务平台上的产品评论的二元情感分析数据集
+- EPRSTMT 是一个基于电子商务平台上的产品评论的二元情感分析任务。
 
 ## 评测结果如下
 
@@ -113,7 +140,7 @@ python evaluate_mmlu.py
 | Qwen-14B-chat       |   66.4   |   71.7   | 70.0   |    47.3   |   76.5  | 61    |   26.8   |   36.6    |   55.6    |   72.3  |   91.2    |
 | TeleChat-7B-chat    |   54.4   |   62.1   | 64.3   |    46.8   |  57.7   |  36.7   |   10.3   |   14.6    | 66.81 |  88.0  |   87.5    |
 
-说明：CMMLU、AGIEval、GAOKAO、CSL、CHID、EPRSTMT均基于[OpenCompass](https://github.com/open-compass/OpenCompass/)平台提供的评测方法进行评估，而对于对比模型，我们同时参考了官方汇报结果和OpenCompass结果。我们使用了自己的评测脚本MMLU与CEVAL榜单，具体方法见`evaluation/`文件夹。
+说明：CMMLU、AGIEval、GAOKAO、CSL、CHID、EPRSTMT均基于[OpenCompass](https://github.com/open-compass/OpenCompass/)平台提供的评测方法进行评估，而对于对比模型，我们同时参考了官方汇报结果和OpenCompass结果。我们使用了自己的评测脚本评测MMLU与CEVAL榜单，具体方法见`evaluation/`文件夹。
 
 # 模型推理和部署
 ### 模型推理
@@ -451,8 +478,6 @@ x=12
 
 # 模型微调
 
-具体参考[**tutorial**](./docs/tutorial.md)
-
 以下是一些性能测试供参考。
 
 （1）deepspeed-lora最小消耗V100和A100卡数，最大训练长度，训练速度（ samples/s）
@@ -522,6 +547,8 @@ deepspeed --master_port 29500 --hostfile=my_hostfile main.py \
    --deepspeed \
    --output_dir output
 ```
+
+具体可以参考：[**tutorial**](./docs/tutorial.md)
 
 ## 分词器
 TeleChat的分词算法是BBPE算法，该算法是字节级实现的分词算法，任意Unicode字符都可以被表示。
@@ -621,6 +648,9 @@ TeleChat的分词算法是BBPE算法，该算法是字节级实现的分词算�
 ```
 
 # 国产GPU适配
+
+### 华为 ATLAS 300 ipro 的推理适配
+
 当前星辰语义大模型已经支持了华为 ATLAS 300 ipro 的推理适配和int8量化。
 - 效果方面，完成了和基于A10卡模型量化效果对齐；
 - 性能方面，具体对比效果如下：
@@ -632,6 +662,8 @@ TeleChat的分词算法是BBPE算法，该算法是字节级实现的分词算�
     | 输入2000输出100                        | 11   | 19 |    
     | 25组case平均                           |  13  |  18 | 
 - TeleChat支持昇腾ATLAS 300 ipro推理和量化，所需的README、示例脚本已发布：[TeleChat-7B]()
+
+### 910B-Mindspore 训练推理适配
 
 当前星辰语义大模型已经支持了华为910B卡，基于 Mindspore 框架的模型训练和推理。
 - 效果方面，完成了和基于A100卡模型训练效果对齐，loss一致；
@@ -646,10 +678,12 @@ TeleChat的分词算法是BBPE算法，该算法是字节级实现的分词算�
     | 8p-NPU(910B)  |  8.49 | 5    |       O2 |
 - TeleChat支持了昇腾910B卡Mindspore版本模型训练，训练所需的modeling、readme、脚本已发布：[TeleChat-7B-Mindspore]()
 
+### 910B-Pytorch 训练推理适配
+
 当前星辰语义大模型已经支持了华为910B卡，基于 Pytorch 框架的模型训练和推理。
 - 效果方面，完成了和基于A100卡模型训练效果对齐，loss一致；
 - 性能方面，具体对比效果如下：
-- TeleChat支持了昇腾910B卡Pytorch版本模型训练，训练所需的modeling、readme、脚本已发布：[TeleChat-7B-Pytorch]()
+- TeleChat支持了昇腾910B卡Pytorch版本模型训练，训练所需的modeling、readme、脚本已发布：[TeleChat-7B-Pytorch](https://gitee.com/ascend/ModelZoo-PyTorch/tree/master/PyTorch/contrib/nlp/Telechat)
 
 # 声明、协议、引用
 ### 声明
