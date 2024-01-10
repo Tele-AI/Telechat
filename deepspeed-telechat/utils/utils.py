@@ -61,6 +61,8 @@ def save_hf_format(model, tokenizer, args, sub_folder=""):
     with open(os.path.join(output_dir, "pytorch_model.bin.index.json"), "w", encoding="utf-8") as f:
         json_config = json.dumps(index_dict, indent=2, sort_keys=True) + "\n"
         f.write(json_config)
+    os.system(f"cp -r {args.model_name_or_path}/*telechat* {args.output_dir}")
+    os.system(f"cp -r {args.model_name_or_path}/generation* {args.output_dir}")
 
 def set_random_seed(seed):
     if seed is not None:
@@ -111,11 +113,11 @@ def _z3_params_to_fetch(param_list):
         if hasattr(p, 'ds_id') and p.ds_status == ZeroParamStatus.NOT_AVAILABLE
     ]
 
-def save_zero_three_model(model, global_rank, save_dir, tokenizer, zero_stage=0, sub_folder=""):
-    zero_stage_3 = (zero_stage == 3)
-    os.makedirs(save_dir, exist_ok=True)
+def save_zero_three_model(model, tokenizer, args, sub_folder=""):
+    zero_stage_3 = (args.zero_stage == 3)
+    os.makedirs(args.output_dir, exist_ok=True)
     WEIGHTS_NAME = "pytorch_model_00001-of-00001.bin"
-    output_dir = os.path.join(save_dir, sub_folder)
+    output_dir = os.path.join(args.output_dir, sub_folder)
     os.makedirs(output_dir, exist_ok=True)
     output_model_file = os.path.join(output_dir, WEIGHTS_NAME)
     model_to_save = model.module if hasattr(model, 'module') else model
@@ -125,7 +127,7 @@ def save_zero_three_model(model, global_rank, save_dir, tokenizer, zero_stage=0,
 
 
     if not zero_stage_3:
-        if global_rank == 0:
+        if args.global_rank == 0:
             torch.save(model_to_save.state_dict(), output_model_file)
             for k, v in model_to_save.named_parameters():
                 if "lora" not in k:
@@ -142,17 +144,19 @@ def save_zero_three_model(model, global_rank, save_dir, tokenizer, zero_stage=0,
                     v_p = v.data.cpu()
             else:
                 v_p = v.cpu()
-            if global_rank == 0 and "lora" not in k:
+            if args.global_rank == 0 and "lora" not in k:
                 output_state_dict[k] = v_p
                 index_dict["weight_map"][k] = WEIGHTS_NAME
                 total_size += v.numel() * get_dtype_size(v.dtype)
-        if global_rank == 0:
+        if args.global_rank == 0:
             torch.save(output_state_dict, output_model_file)
         del output_state_dict
 
-    if global_rank == 0:
+    if args.global_rank == 0:
         index_dict["metadata"]["total_size"] = total_size
         with open(os.path.join(output_dir, "pytorch_model.bin.index.json"), "w", encoding="utf-8") as f:
             json_config = json.dumps(index_dict, indent=2, sort_keys=True) + "\n"
             f.write(json_config)
         tokenizer.save_pretrained(output_dir)
+        os.system(f"cp -r {args.model_name_or_path}/*telechat* {args.output_dir}")
+        os.system(f"cp -r {args.model_name_or_path}/generation* {args.output_dir}")

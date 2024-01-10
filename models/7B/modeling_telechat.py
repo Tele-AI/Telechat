@@ -105,8 +105,7 @@ class RotaryEmbedding(torch.nn.Module):
         return ntk_alpha
 
     def forward(self, x, seq_dim=0, seq_len=None):
-        if seq_len is None:
-            seq_len = x.shape[seq_dim]
+        seq_len = x.shape[seq_dim]
         seq_len = max(seq_len, self.config.training_seqlen)
         ntk_alpha = self.get_ntk_alpha(seq_len)
         self.mscale = float(self.get_mscale(seq_len / self.config.training_seqlen))

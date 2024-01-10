@@ -21,14 +21,13 @@ deepspeed --master_port 29500 main.py \
    --with_loss_mask \
    --data_output_path /tmp/data_files/ \
    --per_device_train_batch_size 1 \
-   --max_seq_len 1024 \
+   --max_seq_len 2048 \
    --learning_rate 2e-5 \
-   --weight_decay 0. \
-   --num_train_epochs 1 \
-   --gradient_accumulation_steps 8 \
+   --weight_decay 0.0001 \
+   --num_train_epochs 5 \
+   --gradient_accumulation_steps 4 \
    --lr_scheduler_type cosine \
    --gradient_checkpointing \
-   --offload \
    --warmup_proportion 0.1 \
    --seed 1233 \
    --zero_stage $ZERO_STAGE \

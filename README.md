@@ -1,3 +1,17 @@
+<div align="center">
+<h1>
+  星辰语义大模型-TeleChat
+</h1>
+</div>
+
+<p align="center">
+🤗 <a href="https://huggingface.co/Tele-AI/Telechat-7B" target="_blank">Hugging Face</a> • 🏔 <a href="" target="_blank">MindSpore</a>️ • 💬 <a href="./images/wechat.jpg" target="_blank">WeChat</a>
+</p>
+
+<p align="center">
+ <a href="https://arxiv.org/abs/2401.03804" target="_blank"> Tech Report </a> 
+</p>
+
 # 目录
 - [模型介绍](#模型介绍)
 - [效果评测](#效果评测)
@@ -8,13 +22,13 @@
 - [声明、协议、引用](#声明协议引用)
 
 # 最新动态
-- 2024.1.10 开源1T中文数据集
 - 2024.1.10 开源7B版本chat模型及其量化版本
-- 2024.1.20开源12B版本模型（待开放）
+- 2024.1.11 开源1T中文数据集
+- 2024.1月底开源12B版本模型（待开放）
 
 # 模型介绍
-### TeleChat星辰语义大模型
-- TeleChat星辰语义大模型是由中电信人工智能科技有限公司（北京）研发训练的大语言模型，采用1.5万亿 Tokens中英文高质量语料进行训练。
+### 星辰语义大模型-TeleChat
+- 星辰语义大模型TeleChat是由中电信人工智能科技有限公司研发训练的大语言模型，采用1.5万亿 Tokens中英文高质量语料进行训练。
 - 本次开源了对话模型**TeleChat-7B-bot**，以及其`huggingface`格式的权重文件。此外，我们还开源了7B模型的int8和int4量化版本。
 
 ### 模型结构
@@ -34,7 +48,7 @@
 我们开源的TeleChat模型：
 - 支持deepspeed微调，开源了基于deepspeed的训练代码，支持Zero并行显存优化，同时集成了FlashAttention2
 - 多轮能力支持。开源了多轮数据构建方式，针对多轮模型训练集成了针对多轮的mask loss训练方式，更好的聚焦多轮答案，提升问答效果。
-- 外推能力提升。开源了8K训练版本模型，采用 NTK-aware + LogN 外推方式，可以外推到96K。
+- 外推能力提升。开源了8K训练版本模型，采用 NTK-aware + LogN 外推方式，可以外推到32K。
 - 具备较好的长文生成能力。在工作总结、工作计划、PPT大纲、申论、招标书、邮件、方案、周报、JD写作等长文写作任务重具有较好的表现。
 
 
@@ -42,13 +56,48 @@
 
 | 模型版本  | 下载链接           |
 |---------| ----------------- |
-| 7B-FP16 | [TeleChat-FP16]() |
-| 7B-int8 | [TeleChat-int8]() |
-| 7B-int4 | [TeleChat-int4]() |
+| 7B-FP16 | [TeleChat-FP16](https://huggingface.co/Tele-AI/Telechat-7B) |
+| 7B-int8 | [TeleChat-int8](https://huggingface.co/Tele-AI/Telechat-7B-int8) |
+| 7B-int4 | [TeleChat-int4](https://huggingface.co/Tele-AI/Telechat-7B-int4) |
 
 
 # 效果评测
 TeleChat模型相比同规模模型在评测效果方面也有较好的表现，我们的评测集涵盖了包括MMLU、C-Eval、GAOKAO、AGIEval、CMMLU、 GSM8K、MATH、HumanEval、CHID等数据集，评测能力包括了自然语言理解、知识、数学计算和推理、代码生成等
+
+## 评测集介绍
+
+### 通用能力
+
+- MMLU 数据集是一个全面的英文评测数据集，涵盖了 57 个学科，包括人文学科、社会科学、自然科学、初等数学、美国历史、计算机科学、法律等等。我们进行了 5-shot 测试。复现方法：
+```bash
+cd evaluation
+python evaluate_mmlu.py
+```
+- CEVAL 数据集是一个全面的中文评估测试集，包括初中、高中、大学和专业难度级别的多项选择题，涵盖了 52 个不同的学科领域。
+
+- CMMLU 数据集同样是一个全面的中文评估测试集，涵盖了从基础学科到高级专业水平的67个主题。
+
+- AGIEval 数据集是一个专门为评估基础模型在难度较高的标准化考试（如大学入学考试、法学院入学考试、数学竞赛和律师资格考试）的语境中而设计的基准测试，包括中文试题和英文试题。
+
+- GAOKAO 数据集是一个基于中国高考题构建的语言模型能力测试集，包括 1781 道客观题和 1030 道主观题。我们只保留了客观题的评测结果。
+
+### 推理和代码能力
+
+- GSM8K 数据集包含了8.5K高质量的小学数学题，能够评估语言模型在数学推理能力上的表现，我们利用[官方](https://github.com/openai/grade-school-math)的评测方案在test集上进行了4-shot测试。
+
+- MATH 数据集包含了12.5K具有挑战性的高中数学竞赛题，难度较大，对语言模型的推理能力要求较高，基于[官方](https://github.com/hendrycks/math)的评测方案，我们在test集上进行了4-shot测试。
+
+- HumanEval 数据集是一个由openai提供的代码能力测试数据集，它由 164 个编程问题组成，要求根据给定的问题和代码模板，生成正确的代码片段，我们利用[官方](https://github.com/openai/human-eval)评测方案在test集上进行了zero-shot测试。
+
+### 语言理解能力
+
+- CSL 数据集包含了 396k 篇中文论文，需要模型能够识别中文学术摘要与其关键词之间的匹配情况。
+
+- CHID 数据集是一个中文阅读理解任务，要求模型选择出最恰当的成语填补中文片段中的空缺处。
+
+- EPRSTMT 数据集是一个基于电子商务平台上的产品评论的二元情感分析数据集
+
+## 评测结果如下
 
 | Model               |   MMLU   |  C-Eval  |  CMMLU |  AGIEval  | GAOKAO  | GSM8K   |   MATH   | HumanEval |   CSL   | CHID   | EPRSTMT |
 |:--------------------|:--------:|:--------:|:------:|:--------:|:------: |:-------:|:--------:|:----------:|:-----:|:----:|:-------:|
@@ -62,13 +111,37 @@ TeleChat模型相比同规模模型在评测效果方面也有较好的表现，
 | Baichuan2-13B-chat  |   57   |   56.7     | 58.4   |    40     |   51.4    | 55.3    |   8.6   |   17.7    |   63.1  |   78.2  |  87.5    |
 | Qwen-7B-chat        |   56.6   |   59.3   | 59.5   |    41.3   |   63.3   | 52.5    |   10.3   |   26.2    |   63.1  |   72.3  |   88.8    |
 | Qwen-14B-chat       |   66.4   |   71.7   | 70.0   |    47.3   |   76.5  | 61    |   26.8   |   36.6    |   55.6    |   72.3  |   91.2    |
-| TeleChat-7B-chat    |   54.4   |   62.1   | 64.3   |    46.8   |  57.7   |  36.7   |   10.3   |   14.6    | 79.2  |  88.0  |   87.5    |
+| TeleChat-7B-chat    |   54.4   |   62.1   | 64.3   |    46.8   |  57.7   |  36.7   |   10.3   |   14.6    | 66.81 |  88.0  |   87.5    |
 
-说明：对于对比模型，我们同时参考了官方汇报结果和OpenCompass结果。
+说明：CMMLU、AGIEval、GAOKAO、CSL、CHID、EPRSTMT均基于[OpenCompass](https://github.com/open-compass/OpenCompass/)平台提供的评测方法进行评估，而对于对比模型，我们同时参考了官方汇报结果和OpenCompass结果。我们使用了自己的评测脚本MMLU与CEVAL榜单，具体方法见`evaluation/`文件夹。
 
 # 模型推理和部署
 ### 模型推理
 当前模型推理兼容了单卡和多卡推理，以及针对长文推理做了部分优化工作。具体推理操作请参考：[**tutorial**](./docs/tutorial.md)
+
+**模型推理方法示范**
+```python
+>>> import os
+>>> import torch
+>>> from transformers import AutoModelForCausalLM, AutoTokenizer, GenerationConfig
+>>> os.environ["CUDA_VISIBLE_DEVICES"] = '0'
+>>> tokenizer = AutoTokenizer.from_pretrained('../models/7B')
+>>> model = AutoModelForCausalLM.from_pretrained('../models/7B', trust_remote_code=True, device_map="auto", torch_dtype=torch.float16)
+>>> generate_config = GenerationConfig.from_pretrained('../models/7B')
+>>> question="生抽与老抽的区别？"
+>>> answer, history = model.chat(tokenizer = tokenizer, question=question, history=[], generation_config=generate_config, stream=False)
+>>> print(answer)
+生抽和老抽是两种不同的酱油，它们的区别如下：
+ 
+1. 原料不同：生抽是用大豆、小麦等谷物为原料制成的；而老抽则是用豆酱、面酱等发酵后的调味品为原料制成的。
+ 
+2. 制作工艺不同：生抽是通过将大豆浸泡在水中，然后经过蒸煮、发酵等过程制成的；而老抽则是在生抽的基础上加入一定比例的盐、糖、味精等调料，再进行发酵制成的。
+ 
+3. 口感和风味不同：生抽具有咸鲜的味道，口感比较清爽；而老抽则具有特殊的香味和味道，口感相对较重。
+ 
+总的来说，生抽和老抽都是酱油的不同种类，它们在原料、制作工艺和口感等方面都有所不同。
+```
+
 
 ### 模型部署
 TeleChat目前提供了API、Web两种部署方式。目前仅提供简单的单卡单并发场景，用于演示和效果测试。基于参考快速上手手册：[**tutorial**](./docs/tutorial.md)
@@ -77,7 +150,7 @@ API: 分为流式接口和json接口，支持传入推理参数
 
 Web: 支持流式生成、多轮对话
 
-### TeleChat星辰语义大模型能力展示
+### 星辰语义大模型TeleChat能力展示
 
 <details> 
 <summary>工作计划</summary>
@@ -332,7 +405,7 @@ x=12
 问题：
 我人在外地，取款手续费是多少？
 相似问题：
-``` 
+```
 
 > TeleChat:
 ```text
@@ -378,7 +451,7 @@ x=12
 
 # 模型微调
 
-具体参考[**tutorial**](./docs/tutorial.md)，另外[parameters.md](./docs/parameters.md)包含了一些sft参数解读和注意事项。
+具体参考[**tutorial**](./docs/tutorial.md)
 
 以下是一些性能测试供参考。
 
@@ -396,6 +469,60 @@ x=12
 | 7B | 单机8卡V100-32G  |	5120 |	0.529 |	flash-attn关闭，zero-3，offload，gradient-checkpointing |
 | 7B | 单机8卡A100-40G	| 18432	| 0.696	| flash-attn开启，zero-3，offload，gradient-checkpointing |
 
+（3）全参微调deepspeed版本，单机8卡A100，2048训练长度，训练速度（ samples/s）
+
+| 模型大小 | NVIDIA卡型号| 训练长度 | 训练速度 | 参数设置 | 
+| :----: | :----: | :----: | :----: | :----: |
+| 7B | 单机8卡A100-40G	| 2048	| 8.866	| flash-attn开启，zero-3，gradient-checkpointing |
+
+## 单机训练
+以下是TeleChat-7B单机微调的样例脚本。其中训练数据为1000条单轮样例数据，为了测试使用，不保证效果。
+```shell
+deepspeed --master_port 29500 main.py \
+   --data_path ../../example_datas/single_turn_example.jsonl  \
+   --model_name_or_path ../../models/7B \
+   --with_loss_mask \
+   --data_output_path /tmp/data_files/ \
+   --per_device_train_batch_size 1 \
+   --max_seq_len 2048 \
+   --learning_rate 2e-5 \
+   --weight_decay 0. \
+   --num_train_epochs 1 \
+   --gradient_accumulation_steps 8 \
+   --lr_scheduler_type cosine \
+   --gradient_checkpointing \
+   --warmup_proportion 0.1 \
+   --seed 1233 \
+   --zero_stage 3 \
+   --deepspeed \
+   --output_dir output
+```
+
+## 多机训练
+
+多机训练需要给出hostfile，如deepspeed-telechat/sft/my_hostfile所示。脚本中需指定hostfile的路径
+
+```shell
+deepspeed --master_port 29500 --hostfile=my_hostfile main.py \
+   --data_path ../../example_datas/single_turn_example.jsonl  \
+   --model_name_or_path ../../models/7B \
+   --with_loss_mask \
+   --data_output_path /tmp/data_files/ \
+   --per_device_train_batch_size 1 \
+   --max_seq_len 2048 \
+   --learning_rate 2e-5 \
+   --weight_decay 0. \
+   --num_train_epochs 1 \
+   --gradient_accumulation_steps 8 \
+   --lr_scheduler_type cosine \
+   --gradient_checkpointing \
+   --warmup_proportion 0.1 \
+   --seed 1233 \
+   --zero_stage 3 \
+   --deepspeed \
+   --output_dir output
+```
+
 ## 分词器
 TeleChat的分词算法是BBPE算法，该算法是字节级实现的分词算法，任意Unicode字符都可以被表示。
 - TeleChat 的分词器词表大小为160256，是中英双语的词表。
@@ -407,19 +534,116 @@ TeleChat的分词算法是BBPE算法，该算法是字节级实现的分词算�
 
 # 模型量化
 
-我们使用基于 [AutoGPTQ](https://github.com/PanQiWei/AutoGPTQ) 的量化方案对自研TeleChat星辰语义大模型做量化，提供Int8和Int4的量化模型。
+我们使用基于 [AutoGPTQ](https://github.com/PanQiWei/AutoGPTQ) 的量化方案对自研星辰语义大模型TeleChat做量化，提供Int8和Int4的量化模型。
 
-具体量化操作请参考：[**tutorial**](./docs/tutorial.md)
+具体量化操作请参考：[**tutorial**](./docs/tutorial.md)，以下是离线量化和量化后推理的样例脚本
+
+## 8bit离线量化
+
+```python
+>>> from transformers import AutoTokenizer
+>>> from auto_gptq import BaseQuantizeConfig
+>>> from modeling_telechat_gptq import TelechatGPTQForCausalLM
+>>> tokenizer_path = '../models/7B'
+>>> pretrained_model_dir = '../models/7B'
+>>> quantized_model_dir = '../models/7B_8bit'
+>>> tokenizer = AutoTokenizer.from_pretrained(tokenizer_path, use_fast=True)
+>>> calibration_text = ["auto-gptq is an easy-to-use model quantization library with user-friendly apis, based on GPTQ algorithm."]
+>>> examples = [tokenizer(_) for _ in calibration_text]
+>>> quantize_config = BaseQuantizeConfig( bits=8,  group_size=128,  desc_act=False )
+>>> model = TelechatGPTQForCausalLM.from_pretrained(pretrained_model_dir, quantize_config,trust_remote_code=True)
+>>> model.quantize(examples)
+>>> model.save_quantized(quantized_model_dir)
+```
+
+## 8bit量化模型推理
+```python
+>>> from transformers import AutoTokenizer, GenerationConfig
+>>> from modeling_telechat_gptq import TelechatGPTQForCausalLM
+>>> PATH = '../models/7B_8bit'
+>>> tokenizer = AutoTokenizer.from_pretrained(PATH, trust_remote_code=True)
+>>> model = TelechatGPTQForCausalLM.from_quantized(PATH, device="cuda:0", inject_fused_mlp=False, inject_fused_attention=False, trust_remote_code=True)
+>>> generate_config = GenerationConfig.from_pretrained(PATH)
+>>> model.eval()
+>>> question = "生抽与老抽的区别？"
+>>> answer, history = model.chat(tokenizer=tokenizer, question=question, history=[], generation_config=generate_config, stream=False)
+>>> print("回答:", answer)
+回答: 生抽和老抽是两种不同的酱油，它们的区别如下：
+
+1. 原料不同：生抽是用大豆、面粉等为原料制成的；而老抽则是用豆豉、盐等为原料制成的。
+
+2. 制作工艺不同：生抽是通过将大豆浸泡在水中，然后经过发酵、蒸煮等过程制成的；而老抽则是在生抽的基础上进行进一步的加工和处理，如加入盐、糖、味精等调料。
+
+3. 口感和风味不同：生抽的口感相对较咸，适合用于烹调肉类、海鲜等；而老抽的风味相对较重，适合用于烹调红烧肉、酱爆鸡丁等菜品。
+
+总的来说，生抽和老抽都是常见的酱油品种，它们在原料、制作工艺和口感等方面都有所不同。选择使用哪种酱油，可以根据个人口味和菜品需求来决定。
+```
+
+## 4bit离线量化
+
+```python
+>>> from transformers import AutoTokenizer
+>>> from auto_gptq import BaseQuantizeConfig
+>>> from modeling_telechat_gptq import TelechatGPTQForCausalLM
+>>> tokenizer_path = '../models/7B'
+>>> pretrained_model_dir = '../models/7B'
+>>> quantized_model_dir = '../models/7B_4bit'
+>>> tokenizer = AutoTokenizer.from_pretrained(tokenizer_path, use_fast=True)
+>>> calibration_text = ["auto-gptq is an easy-to-use model quantization library with user-friendly apis, based on GPTQ algorithm."]
+>>> examples = [tokenizer(_) for _ in calibration_text]
+>>> quantize_config = BaseQuantizeConfig( bits=4, group_size=128, desc_act=False )
+>>> model = TelechatGPTQForCausalLM.from_pretrained(pretrained_model_dir, quantize_config,trust_remote_code=True)
+>>> model.quantize(examples)
+>>> model.save_quantized(quantized_model_dir)
+```
+
+## 4bit量化模型推理
+```python
+>>> from transformers import AutoTokenizer, GenerationConfig
+>>> from modeling_telechat_gptq import TelechatGPTQForCausalLM
+>>> PATH = '../models/7B_4bit'
+>>> tokenizer = AutoTokenizer.from_pretrained(PATH, trust_remote_code=True)
+>>> model = TelechatGPTQForCausalLM.from_quantized(PATH, device="cuda:0", inject_fused_mlp=False, inject_fused_attention=False, trust_remote_code=True)
+>>> generate_config = GenerationConfig.from_pretrained(PATH)
+>>> model.eval()
+>>> question = "生抽与老抽的区别？"
+>>> answer, history = model.chat(tokenizer=tokenizer, question=question, history=[], generation_config=generate_config, stream=False)
+>>> print("回答:", answer)
+回答: 生抽和老抽是两种不同的酱油，它们的区别主要体现在以下几个方面：
+
+1. 原料不同：生抽是用大豆、小麦等制成的，而老抽则是用豆豉、盐等制成的。
+
+2. 发酵方式不同：生抽是通过将大豆或小麦浸泡在水中，然后进行发酵制成的；而老抽则是在制作过程中直接将大豆或小麦炒熟后使用。
+
+3. 味道不同：生抽的口感比较鲜美，有咸味和甜味；老抽的味道相对较重，有咸味和苦味。
+
+4. 用途不同：生抽主要用于调味酱料、腌制肉类等；老抽则主要用于烹调菜肴、焖煮食材等。
+```
 
 # 国产GPU适配
 当前星辰语义大模型已经支持了华为 ATLAS 300 ipro 的推理适配和int8量化。
 - 效果方面，完成了和基于A10卡模型量化效果对齐；
 - 性能方面，具体对比效果如下：
+  
+    | 输入输出信息                           | NPU (tokens/s)    |   GPU (tokens/s)   |    
+    | ------------------------------------ | ------- | -------|
+    | 输入100输出100                         | 15  | 21 |
+    | 输入1000输出100                        | 13   | 24 |
+    | 输入2000输出100                        | 11   | 19 |    
+    | 25组case平均                           |  13  |  18 | 
 - TeleChat支持昇腾ATLAS 300 ipro推理和量化，所需的README、示例脚本已发布：[TeleChat-7B]()
 
 当前星辰语义大模型已经支持了华为910B卡，基于 Mindspore 框架的模型训练和推理。
 - 效果方面，完成了和基于A100卡模型训练效果对齐，loss一致；
+  
+<img src="./images/910B-pytorch训练loss对比.png" width = "300" height = "300" alt="910B-pytorch训练loss对比.png" />
+
 - 性能方面，具体对比效果如下：
+  
+    | NAME    |  performance(samples(2K)/s) | Epochs | AMP_Type |
+    | ------- | ---: | ------ | -------: |
+    | 8p-GPU(A100-40G) | 10 | 5    |        - |
+    | 8p-NPU(910B)  |  8.49 | 5    |       O2 |
 - TeleChat支持了昇腾910B卡Mindspore版本模型训练，训练所需的modeling、readme、脚本已发布：[TeleChat-7B-Mindspore]()
 
 当前星辰语义大模型已经支持了华为910B卡，基于 Pytorch 框架的模型训练和推理。
@@ -429,8 +653,22 @@ TeleChat的分词算法是BBPE算法，该算法是字节级实现的分词算�
 
 # 声明、协议、引用
 ### 声明
+我们在此声明，不要使用TeleChat模型及其衍生模型进行任何危害国家社会安全或违法的活动。同时，我们也要求使用者不要将TeleChat模型用于没有安全审查和备案的互联网服务。我们希望所有使用者遵守上述原则，确保科技发展在合法合规的环境下进行。
+
+我们已经尽我们所能，来确保模型训练过程中使用的数据的合规性。然而，尽管我们已经做出了巨大的努力，但由于模型和数据的复杂性，仍有可能存在一些无法预见的问题。因此，如果由于使用TeleChat开源模型而导致的任何问题，包括但不限于数据安全问题、公共舆论风险，或模型被误导、滥用、传播或不当利用所带来的任何风险和问题，我们将不承担任何责任。
 
 ### 协议
+社区使用 TeleChat 模型需要遵循《[TeleChat模型社区许可协议](./TeleChat模型社区许可协议.pdf)》。TeleChat模型支持商业用途，如果您计划将 TeleChat 模型或其衍生品用于商业目的，您需要通过以下联系邮箱 TeleAI@chinatelecom.cn，提交《TeleChat模型社区许可协议》要求的申请材料。审核通过后，将特此授予您一个非排他性、全球性、不可转让、不可再许可、可撤销的商用版权许可。
 
 ### 引用
-
+如需引用我们的工作，请使用如下 reference:
+```
+@misc{wang2024telechat,
+      title={TeleChat Technical Report}, 
+      author={Zihan Wang and Xinzhang Liu and Shixuan Liu and Yitong Yao and Yuyao Huang and Zhongjiang He and Xuelong Li and Yongxiang Li and Zhonghao Che and Zhaoxi Zhang and Yan Wang and Xin Wang and Luwen Pu and Huihan Xu and Ruiyu Fang and Yu Zhao and Jie Zhang and Xiaomeng Huang and Zhilong Lu and Jiaxin Peng and Wenjun Zheng and Shiquan Wang and Bingkai Yang and Xuewei he and Zhuoru Jiang and Qiyi Xie and Yanhan Zhang and Zhongqiu Li and Lingling Shi and Weiwei Fu and Yin Zhang and Zilu Huang and Sishi Xiong and Yuxiang Zhang and Chao Wang and Shuangyong Song},
+      year={2024},
+      eprint={2401.03804},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL}
+}
+```

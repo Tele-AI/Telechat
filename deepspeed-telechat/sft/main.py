@@ -377,10 +377,8 @@ def main():
             if args.zero_stage == 3:
                 # For zero stage 3, each gpu only has a part of the model, so we need a special save function
                 save_zero_three_model(model,
-                                      args.global_rank,
-                                      args.output_dir,
                                       tokenizer,
-                                      args.zero_stage,
+                                      args,
                                       f"epoch_{epoch}")
             print_rank_0('save successfully!', args.global_rank)
             if args.lora_dim > 0:
@@ -401,10 +399,8 @@ def main():
         if args.zero_stage == 3:
             # For zero stage 3, each gpu only has a part of the model, so we need a special save function
             save_zero_three_model(model,
-                                  args.global_rank,
-                                  args.output_dir,
                                   tokenizer,
-                                  zero_stage=args.zero_stage)
+                                  args)
         print_rank_0('save successfully!', args.global_rank)
 
 
