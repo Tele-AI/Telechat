@@ -61,8 +61,8 @@ def save_hf_format(model, tokenizer, args, sub_folder=""):
     with open(os.path.join(output_dir, "pytorch_model.bin.index.json"), "w", encoding="utf-8") as f:
         json_config = json.dumps(index_dict, indent=2, sort_keys=True) + "\n"
         f.write(json_config)
-    os.system(f"cp -r {args.model_name_or_path}/*telechat* {args.output_dir}")
-    os.system(f"cp -r {args.model_name_or_path}/generation* {args.output_dir}")
+    os.system(f"cp -r {args.model_name_or_path}/*telechat* {output_dir}")
+    os.system(f"cp -r {args.model_name_or_path}/generation* {output_dir}")
 
 def set_random_seed(seed):
     if seed is not None:
@@ -158,5 +158,5 @@ def save_zero_three_model(model, tokenizer, args, sub_folder=""):
             json_config = json.dumps(index_dict, indent=2, sort_keys=True) + "\n"
             f.write(json_config)
         tokenizer.save_pretrained(output_dir)
-        os.system(f"cp -r {args.model_name_or_path}/*telechat* {args.output_dir}")
-        os.system(f"cp -r {args.model_name_or_path}/generation* {args.output_dir}")
+        os.system(f"cp -r {args.model_name_or_path}/*telechat* {output_dir}")
+        os.system(f"cp -r {args.model_name_or_path}/generation* {output_dir}")
