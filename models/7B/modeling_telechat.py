@@ -106,9 +106,11 @@ class RotaryEmbedding(torch.nn.Module):
 
     def forward(self, x, seq_dim=0, seq_len=None):
         seq_len = x.shape[seq_dim]
-        seq_len = max(seq_len, self.config.training_seqlen)
+        self.mscale = 1.0
+        if not self.training:
+            seq_len = max(seq_len, self.config.training_seqlen)
+            self.mscale = float(self.get_mscale(seq_len / self.config.training_seqlen))
         ntk_alpha = self.get_ntk_alpha(seq_len)
-        self.mscale = float(self.get_mscale(seq_len / self.config.training_seqlen))
         if True:
             base = self.base * ntk_alpha ** (self.dim / (self.dim - 2))
             self.inv_freq = 1.0 / (base ** (torch.arange(0, self.dim, 2, device=x.device).float() / self.dim))
@@ -191,7 +193,6 @@ class FlashSelfAttention(torch.nn.Module):
         q, k, v = [rearrange(x, 'b s ... -> (b s) ...') for x in [q, k, v]]
         cu_seqlens_q = torch.arange(0, (batch_size + 1) * seqlen_q, step=seqlen_q, dtype=torch.int32,
                                     device=q.device)
-        self.training = False
         if self.training:
             # during training q,k,v always have same seqlen
             assert seqlen_k == seqlen_q
