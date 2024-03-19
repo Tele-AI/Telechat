@@ -480,47 +480,63 @@ x=12
 
 以下是一些性能测试供参考。
 
-（1）deepspeed-lora最小消耗V100和A100卡数，最大训练长度，训练速度（ samples/s）
-
-| 模型大小 | NVIDIA卡型号 | gpu数 | 最长训练长度 | 训练速度 | 参数设置 | 
-| :----: | :----: | :----: | :----: | :----: | :----: |
-| 7B | V100-32G |  单卡	| 5120 | 0.084 | flash-attn关闭，zero-3，offload，gradient-checkpointing |
-| 7B | A100-40G	| 单卡	| 18432	| 0.134 |	flash-attn开启，zero-3，offload，gradient-checkpointing |
-
-（2）全参微调deepspeed版本，单机8卡V100和A100，最大训练长度，训练速度（ samples/s）
+全参微调deepspeed版本，单机8卡A100，训练速度参考（ samples/s）
 
 | 模型大小 | NVIDIA卡型号| 最长训练长度 | 训练速度 | 参数设置 | 
 | :----: | :----: | :----: | :----: | :----: |
-| 7B | 单机8卡V100-32G  |	5120 |	0.529 |	flash-attn关闭，zero-3，offload，gradient-checkpointing |
-| 7B | 单机8卡A100-40G	| 18432	| 0.696	| flash-attn开启，zero-3，offload，gradient-checkpointing |
+| 7B | 单机8卡A100-40G	| 2048	| 8.86	| flash-attn开启，zero-3，offload，gradient-checkpointing |
+| 7B | 单机8卡A100-40G	| 4096	| 4.88	| flash-attn开启，zero-3，offload，gradient-checkpointing |
+| 12B | 单机8卡A100-40G  |	2048 |	5.24 |	flash-attn开启，zero-3，gradient-checkpointing |
+| 12B | 单机8卡A100-40G  |	4096 |	2.90 |	flash-attn开启，zero-3，gradient-checkpointing |
 
-（3）全参微调deepspeed版本，单机8卡A100，2048训练长度，训练速度（ samples/s）
+## 数据处理
+为了方便数据配比，解耦了数据处理和模型训练，数据权重配比文件如**data.json**所示，json字典中key为读取数据的路径，value为训练时数据的权重。单轮、多轮数据格式如样例数据所示
+```shell
+{
+  "datas/single_turn_example.jsonl": 2.0,
+  "datas/multi_turn_example.jsonl": 1.0
+}
+```
+运行**process_data.py**即可将文件处理成tokens，并保存。其中**data_output_path/train_data.pt**保存处理后的文件。
 
-| 模型大小 | NVIDIA卡型号| 训练长度 | 训练速度 | 参数设置 | 
-| :----: | :----: | :----: | :----: | :----: |
-| 7B | 单机8卡A100-40G	| 2048	| 8.866	| flash-attn开启，zero-3，gradient-checkpointing |
+* 数据通过**data_path**读取，最终拼接生成**num_samples**个**max_seq_len**长度的sample进行训练。如样例所示，假设**datas/single_turn_example.jsonl**和**datas/multi_turn_example.jsonl**各有1000条samples，配比过后数据池中则总共包含3000条samples。在数据拼接过程中，程序会不断遍历数据池，尽可能将数据拼接到4096长度（不够就左padding），直至生成到num_samples的个数。因此，每个sample中会包含多条拼接而成的数据。
+* process_method选择**single**或**multiple**单进程或多进程处理数据。
+
+```python
+python -u process_data.py \
+   --data_path data.json \ # 数据配比文件路径
+   --tokenizer_path ../models/12B \ # 模型/tokenzier路径
+   --data_output_path $DATA_OUTPUT_PATH \ # 处理后数据保存地址
+   --max_seq_len $MAX_LEN \ # 数据长度
+   --num_samples $NUM_SAMPLES \ # 最终生成拼接后的数据数量
+   --num_workers 10 \ # 多进程个数
+   --process_method multiple \ # 多进程&单进程处理
+   --seed 42
+```
 
 ## 单机训练
-以下是TeleChat-7B单机微调的样例脚本。其中训练数据为1000条单轮样例数据，为了测试使用，不保证效果。
+以下是TeleChat-12B单机微调的样例脚本。其中训练数据如**data.json**所示，为了测试使用，不保证效果。
 ```shell
 deepspeed --master_port 29500 main.py \
-   --data_path ../../example_datas/single_turn_example.jsonl  \
-   --model_name_or_path ../../models/7B \
+   --data_path ${DATA_OUTPUT_PATH}/train_data.pt  \ # tokenzie后的数据文件
+   --model_name_or_path ../../models/12B \
    --with_loss_mask \
-   --data_output_path /tmp/data_files/ \
    --per_device_train_batch_size 1 \
-   --max_seq_len 2048 \
-   --learning_rate 2e-5 \
-   --weight_decay 0. \
+   --max_seq_len 4096 \
+   --learning_rate 3e-5 \
+   --weight_decay 0.0001 \
    --num_train_epochs 1 \
-   --gradient_accumulation_steps 8 \
+   --gradient_accumulation_steps 4 \
    --lr_scheduler_type cosine \
+   --precision fp16 \ # 训练精度，fp16或bf16
+   --warmup_proportion 0.1 \ 
    --gradient_checkpointing \
-   --warmup_proportion 0.1 \
+   --offload \
    --seed 1233 \
-   --zero_stage 3 \
-   --deepspeed \
-   --output_dir output
+   --zero_stage $ZERO_STAGE \ 
+   --save_steps 10 \
+   --deepspeed \ 
+   --output_dir $OUTPUT # 输出路径 
 ```
 
 ## 多机训练
@@ -529,23 +545,25 @@ deepspeed --master_port 29500 main.py \
 
 ```shell
 deepspeed --master_port 29500 --hostfile=my_hostfile main.py \
-   --data_path ../../example_datas/single_turn_example.jsonl  \
-   --model_name_or_path ../../models/7B \
+   --data_path ${DATA_OUTPUT_PATH}/train_data.pt  \ # tokenzie后的数据文件
+   --model_name_or_path ../../models/12B \
    --with_loss_mask \
-   --data_output_path /tmp/data_files/ \
    --per_device_train_batch_size 1 \
-   --max_seq_len 2048 \
-   --learning_rate 2e-5 \
-   --weight_decay 0. \
+   --max_seq_len 4096 \
+   --learning_rate 3e-5 \
+   --weight_decay 0.0001 \
    --num_train_epochs 1 \
-   --gradient_accumulation_steps 8 \
+   --gradient_accumulation_steps 4 \
    --lr_scheduler_type cosine \
+   --precision fp16 \ # 训练精度，fp16或bf16
+   --warmup_proportion 0.1 \ 
    --gradient_checkpointing \
-   --warmup_proportion 0.1 \
+   --offload \
    --seed 1233 \
-   --zero_stage 3 \
-   --deepspeed \
-   --output_dir output
+   --zero_stage $ZERO_STAGE \ 
+   --save_steps 10 \
+   --deepspeed \ 
+   --output_dir $OUTPUT # 输出路径 
 ```
 
 具体可以参考：[**tutorial**](./docs/tutorial.md)

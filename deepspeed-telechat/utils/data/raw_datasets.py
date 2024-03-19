@@ -6,10 +6,9 @@ from datasets import load_dataset
 
 class PromptRawDataset(object):
 
-    def __init__(self, output_path, seed, local_rank, dataset_name):
+    def __init__(self, output_path, seed, dataset_name):
         self.output_path = output_path
         self.seed = seed
-        self.local_rank = local_rank
         self.raw_datasets = load_dataset(path="json",data_files=dataset_name)
 
 
@@ -29,8 +28,8 @@ class PromptRawDataset(object):
 
 class TelechatDataset(PromptRawDataset):
 
-    def __init__(self, output_path, seed, local_rank, dataset_name):
-        super().__init__(output_path, seed, local_rank, dataset_name)
+    def __init__(self, output_path, seed, dataset_name):
+        super().__init__(output_path, seed, dataset_name)
         self.dataset_name = dataset_name
 
 
