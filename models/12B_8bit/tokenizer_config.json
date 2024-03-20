@@ -13,7 +13,7 @@
   "clean_up_tokenization_spaces": false,
   "eos_token": {
     "__type": "AddedToken",
-    "content": "<_start>",
+    "content": "<_end>",
     "lstrip": false,
     "normalized": true,
     "rstrip": false,
