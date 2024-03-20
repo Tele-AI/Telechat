@@ -5,7 +5,7 @@
 </div>
 
 <p align="center">
-🤗 <a href="https://huggingface.co/Tele-AI/Telechat-7B" target="_blank">Hugging Face</a> • 🏔 <a href="https://gitee.com/mindspore/mindformers/tree/dev/research/telechat" target="_blank">MindSpore</a> • 🐾 <a href="https://gitee.com/Tele-AI/tele-chat" target="_blank">gitee</a>️ • 💬 <a href="https://github.com/Tele-AI/Telechat/blob/master/images/wechat.jpg" target="_blank">WeChat</a>
+🤗 <a href="https://huggingface.co/Tele-AI" target="_blank">Hugging Face</a> • 🏔 <a href="https://gitee.com/mindspore/mindformers/tree/dev/research/telechat" target="_blank">MindSpore</a> • 🐾 <a href="https://gitee.com/Tele-AI/tele-chat" target="_blank">gitee</a>️ • 💬 <a href="https://github.com/Tele-AI/Telechat/blob/master/images/wechat.jpg" target="_blank">WeChat</a>
 </p>
 
 <p align="center">
