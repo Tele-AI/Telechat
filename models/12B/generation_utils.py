@@ -109,12 +109,13 @@ class TelechatIterTextStreamer:
         self.token_until.extend(value.tolist())
         text = self.tokenizer.decode(self.token_until, **self.decode_kwargs)
 
-        output_text = ""
+
         if self._is_printable(text) or self.cache_time >= 6:
             output_text = text[len(self.text_until):]
             self.text_until = text
 
         else:
+            self.cache_time+=1
             return
 
         self.on_finalized_text(output_text)
