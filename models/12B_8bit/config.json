@@ -1,0 +1,43 @@
+{
+  "apply_residual_connection_post_layernorm": false,
+  "architectures": [
+    "TelechatForCausalLM"
+  ],
+  "auto_map": {
+	"AutoConfig": "configuration_telechat.TelechatConfig",
+	"AutoModelForCausalLM": "modeling_telechat.TelechatForCausalLM"
+  },
+  "attention_dropout": 0.0,
+  "attention_softmax_in_fp32": true,
+  "bias_dropout_fusion": true,
+  "bos_token_id": 1,
+  "eos_token_id": 2,
+  "hidden_dropout": 0.0,
+  "hidden_size": 5120,
+  "initializer_range": 0.02,
+  "layer_norm_epsilon": 1e-05,
+  "masked_softmax_fusion": true,
+  "model_type": "telechat",
+  "n_head": 32,
+  "n_inner": null,
+  "n_layer": 38,
+  "offset_alibi": 100,
+  "pad_token_id": 3,
+  "pretraining_tp": 2,
+  "seq_length": 8192,
+  "skip_bias_add": true,
+  "skip_bias_add_qkv": false,
+  "slow_but_exact": false,
+  "transformers_version": "4.24.0",
+  "unk_token_id": 0,
+  "use_cache": true,
+  "vocab_size": 120000,
+  "ffn_hidden_size": 12288,
+  "flash_attn":true,
+  "tie_word_embeddings":false,
+  "training_seqlen":8192,
+  "logn":false,
+  "semi_causal":false,
+  "embed_layernorm":false
+}
+

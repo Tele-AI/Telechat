@@ -5,7 +5,7 @@
 </div>
 
 <p align="center">
-🤗 <a href="https://huggingface.co/Tele-AI/Telechat-7B" target="_blank">Hugging Face</a> • 🏔 <a href="https://gitee.com/mindspore/mindformers/tree/dev/research/telechat" target="_blank">MindSpore</a> • 🐾 <a href="https://gitee.com/Tele-AI/tele-chat" target="_blank">gitee</a>️ • 💬 <a href="https://github.com/Tele-AI/Telechat/blob/master/images/wechat.jpg" target="_blank">WeChat</a>
+🤗 <a href="https://huggingface.co/Tele-AI" target="_blank">Hugging Face</a> • 🏔 <a href="https://gitee.com/mindspore/mindformers/tree/dev/research/telechat" target="_blank">MindSpore</a> • 🐾 <a href="https://gitee.com/Tele-AI/tele-chat" target="_blank">gitee</a>️ • 💬 <a href="https://github.com/Tele-AI/Telechat/blob/master/images/wechat.jpg" target="_blank">WeChat</a>
 </p>
 
 <p align="center">
@@ -23,7 +23,7 @@
 - [声明、协议、引用](#声明协议引用)
 
 # 最新动态
-- 近期开源12B版本模型（待开放）
+- 2024.3.20 开源12B版本chat模型及量化版本
 - 2024.1.11 开源1T中文数据集
 - 2024.1.10 开源7B版本chat模型及其量化版本
 
@@ -59,11 +59,14 @@
 
 本次发布版本和下载链接见下表
 
-| 模型版本  | 下载链接           |
-|---------| ----------------- |
-| 7B-FP16 | [TeleChat-FP16](https://huggingface.co/Tele-AI/Telechat-7B) |
-| 7B-int8 | [TeleChat-int8](https://huggingface.co/Tele-AI/Telechat-7B-int8) |
-| 7B-int4 | [TeleChat-int4](https://huggingface.co/Tele-AI/Telechat-7B-int4) |
+| 模型版本     | 下载链接                                                                  |
+|----------|-----------------------------------------------------------------------|
+| 7B-FP16  | [TeleChat-7B-FP16](https://huggingface.co/Tele-AI/Telechat-7B)        |
+| 7B-int8  | [TeleChat-7B-int8](https://huggingface.co/Tele-AI/Telechat-7B-int8)   |
+| 7B-int4  | [TeleChat-7B-int4](https://huggingface.co/Tele-AI/Telechat-7B-int4)   |
+| 12B-FP16 | [TeleChat-12B-FP16](https://huggingface.co/Tele-AI/TeleChat-12B)      |     
+| 12B-int8 | [TeleChat-12B-int8](https://huggingface.co/Tele-AI/TeleChat-12B-int8) |  
+| 12B-int4 | [TeleChat-12B-int4](https://huggingface.co/Tele-AI/TeleChat-12B-int4) | 
 
 **镜像下载**
 为了便于大家快速上手，我们提供了可运行的环境镜像，下载地址：[镜像下载](https://cloud.189.cn/web/share?code=vQFJRf7JBfmq) （访问码：ona6）
@@ -690,13 +693,21 @@ TeleChat的分词算法是BBPE算法，该算法是字节级实现的分词算�
 
 - 性能方面，具体对比如下：
     
-    | NAME    | performance(samples/s) | Epochs | AMP_Type |
-    | ------- |-----------------------:| ------ | -------: |
-    | 8p-GPU(A100-40G) |                   8.86 | 5    |        - |
-    | 8p-NPU  |                    7.98 | 5    |       O2 |
-  
+    | NAME                  | performance(samples/s) | Epochs | AMP_Type |
+    |-----------------------|-----------------------:| ------ | -------: |
+    | 7B-8p-GPU(A100-40G)  |                   8.86 | 5    |        - |
+    | 7B-8p-NPU            |                    7.98 | 5    |       O2 |
+
     说明：BatchSize/per-GPU=1，zero-stage=3， seq_length=2048， gradient_accumulation_steps：4
-- TeleChat支持昇腾Atlas 800T A2训练服务器，可基于昇思MindSpore框架进行模型训练，训练所需的modeling、README、脚本已发布：[TeleChat-7B-MindSpore](https://gitee.com/mindspore/mindformers/tree/dev/research/telechat)
+
+    | NAME                 | performance(samples/s) | Epochs | AMP_Type |
+    |----------------------|-----------------------:| ------ | -------: |
+    |12B-8p-GPU(A100-40G) |                  6.85 | 5    |        - |
+    |12B-8p-NPU           |                  8.22 | 5    |       O2 |
+
+    说明：BatchSize/per-GPU=1，zero-stage=3， seq_length=1024， gradient_accumulation_steps：4
+  
+- TeleChat支持昇腾Atlas 800T A2训练服务器，可基于昇思MindSpore框架进行模型训练，训练所需的modeling、README、 脚本已发布：[TeleChat-MindSpore](https://gitee.com/mindspore/mindformers/tree/dev/research/telechat) 
 
 ### 昇腾Atlas 800T A2训练服务器+PyTorch框架:  训练、推理适配
 

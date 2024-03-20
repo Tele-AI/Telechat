@@ -11,7 +11,7 @@ tokenizer_path = '../models/7B'
 pretrained_model_dir = '../models/7B'
 quantized_model_dir = '../models/7B_8bit'
 
-tokenizer = AutoTokenizer.from_pretrained(tokenizer_path, use_fast=True)
+tokenizer = AutoTokenizer.from_pretrained(tokenizer_path,trust_remote_code=True)
 calibration_text = ["auto-gptq is an easy-to-use model quantization library with user-friendly apis, based on GPTQ algorithm."]
 examples = [tokenizer(_) for _ in calibration_text]
 quantize_config = BaseQuantizeConfig(
