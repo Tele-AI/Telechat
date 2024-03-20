@@ -31,7 +31,10 @@
 ### 星辰语义大模型-TeleChat
 - 星辰语义大模型TeleChat是由中电信人工智能科技有限公司研发训练的大语言模型，其中7B模型基座采用1.5万亿 Tokens中英文高质量语料进行训练，12B模型基座采用3万亿 Tokens中英文高质量语料进行训练。
 - 我们开源了对话模型**TeleChat-7B-bot**与**TeleChat-12B-bot**，以及其`huggingface`格式的权重文件。此外，我们还开源了7B、12B模型的int8和int4量化版本。
-- **TeleChat-12B-bot**在模型结构、训练数据、训练方法等方面进行了改进，在通用问答和知识类、代码类、数学类榜单上相比**TeleChat-7B-bot**均有大幅提升。在模型结构方面，我们使用小规模的模型尝试多种模型结构的组合，选择最优结构。相比**TeleChat-7B-bot**模型，**TeleChat-12B-bot**模型采用了词嵌入层与输出层解耦的结构，将词嵌入层和输出lm head层参数分开，有助于增强训练稳定性和收敛性。在训练数据方面，我们收集了覆盖书籍、百科、新闻、政务、法律、医药、专利、论文、数学、代码等诸多方面的大量中英文数据；通过优化数据清洗策略大幅提升数据的文本干净度、观点无偏性、内容有效性、格式规范性。在训练方法方面，我们使用科学数据配比学习与课程学习的方法，使用小参数模型在多种数据配比的数据上拟合，得到对各个数据集难度的先验估计；训练过程中每隔一段时间自动化评估当前模型在所有数据集上的loss，以及在评测集上的生成效果，动态提升较难学习的数据集权重，保证模型在各个数据集上都有较佳的拟合效果。
+- **TeleChat-12B-bot**在模型结构、训练数据、训练方法等方面进行了改进，在通用问答和知识类、代码类、数学类榜单上相比**TeleChat-7B-bot**均有大幅提升。
+  - 在模型结构方面，我们使用小规模的模型尝试多种模型结构的组合，选择最优结构。相比**TeleChat-7B-bot**模型，**TeleChat-12B-bot**模型采用了词嵌入层与输出层解耦的结构，将词嵌入层和输出lm head层参数分开，有助于增强训练稳定性和收敛性。
+  - 在训练数据方面，我们收集了覆盖书籍、百科、新闻、政务、法律、医药、专利、论文、数学、代码等诸多方面的大量中英文数据；通过优化数据清洗策略大幅提升数据的文本干净度、观点无偏性、内容有效性、格式规范性。
+  - 在训练方法方面，我们使用科学数据配比学习与课程学习的方法，使用小参数模型在多种数据配比的数据上拟合，得到对各个数据集难度的先验估计；训练过程中每隔一段时间自动化评估当前模型在所有数据集上的loss，以及在评测集上的生成效果，动态提升较难学习的数据集权重，保证模型在各个数据集上都有较佳的拟合效果。
 
 ### 模型结构
 
@@ -157,21 +160,17 @@ TeleChat模型相比同规模模型在评测效果方面也有较好的表现，
 >>> import torch
 >>> from transformers import AutoModelForCausalLM, AutoTokenizer, GenerationConfig
 >>> os.environ["CUDA_VISIBLE_DEVICES"] = '0'
->>> tokenizer = AutoTokenizer.from_pretrained('../models/7B')
->>> model = AutoModelForCausalLM.from_pretrained('../models/7B', trust_remote_code=True, device_map="auto", torch_dtype=torch.float16)
+>>> tokenizer = AutoTokenizer.from_pretrained('../models/12B', trust_remote_code=True)
+>>> model = AutoModelForCausalLM.from_pretrained('../models/12B', trust_remote_code=True, device_map="auto", torch_dtype=torch.float16)
 >>> generate_config = GenerationConfig.from_pretrained('../models/7B')
 >>> question="生抽与老抽的区别？"
 >>> answer, history = model.chat(tokenizer = tokenizer, question=question, history=[], generation_config=generate_config, stream=False)
 >>> print(answer)
-生抽和老抽是两种不同的酱油，它们的区别如下：
- 
-1. 原料不同：生抽是用大豆、小麦等谷物为原料制成的；而老抽则是用豆酱、面酱等发酵后的调味品为原料制成的。
- 
-2. 制作工艺不同：生抽是通过将大豆浸泡在水中，然后经过蒸煮、发酵等过程制成的；而老抽则是在生抽的基础上加入一定比例的盐、糖、味精等调料，再进行发酵制成的。
- 
-3. 口感和风味不同：生抽具有咸鲜的味道，口感比较清爽；而老抽则具有特殊的香味和味道，口感相对较重。
- 
-总的来说，生抽和老抽都是酱油的不同种类，它们在原料、制作工艺和口感等方面都有所不同。
+生抽和老抽是两种不同的酱油，它们在风味、色泽和用途上都有所区别。
+
+1. 颜色：生抽的颜色比较淡，而老抽的颜色较深。生抽的颜色呈红褐色或棕红色，而老抽的颜色则呈棕黑色。
+
+2. 味道：生抽具有鲜美的咸味和微甜的味浅，而老抽浓郁，颜色较深。根据个人口味和烹饪需求选择不同的酱油类型可以获得更好的口感和菜肴效果。
 ```
 
 
@@ -489,8 +488,8 @@ x=12
 
 | 模型大小 | NVIDIA卡型号| 最长训练长度 | 训练速度 | 参数设置 | 
 | :----: | :----: | :----: | :----: | :----: |
-| 7B | 单机8卡A100-40G	| 2048	| 8.86	| flash-attn开启，zero-3，offload，gradient-checkpointing |
-| 7B | 单机8卡A100-40G	| 4096	| 4.88	| flash-attn开启，zero-3，offload，gradient-checkpointing |
+| 7B | 单机8卡A100-40G	| 2048	| 8.86	| flash-attn开启，zero-3，gradient-checkpointing |
+| 7B | 单机8卡A100-40G	| 4096	| 4.88	| flash-attn开启，zero-3，gradient-checkpointing |
 | 12B | 单机8卡A100-40G  |	2048 |	5.24 |	flash-attn开启，zero-3，gradient-checkpointing |
 | 12B | 单机8卡A100-40G  |	4096 |	2.90 |	flash-attn开启，zero-3，gradient-checkpointing |
 
@@ -510,7 +509,7 @@ x=12
 ```python
 python -u process_data.py \
    --data_path data.json \ # 数据配比文件路径
-   --tokenizer_path ../models/12B \ # 模型/tokenzier路径
+   --tokenizer_path ../../models/12B \ # 模型/tokenzier路径
    --data_output_path $DATA_OUTPUT_PATH \ # 处理后数据保存地址
    --max_seq_len $MAX_LEN \ # 数据长度
    --num_samples $NUM_SAMPLES \ # 最终生成拼接后的数据数量
