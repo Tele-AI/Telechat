@@ -489,8 +489,8 @@ x=12
 
 | 模型大小 | NVIDIA卡型号| 最长训练长度 | 训练速度 | 参数设置 | 
 | :----: | :----: | :----: | :----: | :----: |
-| 7B | 单机8卡A100-40G	| 2048	| 8.86	| flash-attn开启，zero-3，offload，gradient-checkpointing |
-| 7B | 单机8卡A100-40G	| 4096	| 4.88	| flash-attn开启，zero-3，offload，gradient-checkpointing |
+| 7B | 单机8卡A100-40G	| 2048	| 8.86	| flash-attn开启，zero-3，gradient-checkpointing |
+| 7B | 单机8卡A100-40G	| 4096	| 4.88	| flash-attn开启，zero-3，gradient-checkpointing |
 | 12B | 单机8卡A100-40G  |	2048 |	5.24 |	flash-attn开启，zero-3，gradient-checkpointing |
 | 12B | 单机8卡A100-40G  |	4096 |	2.90 |	flash-attn开启，zero-3，gradient-checkpointing |
 
