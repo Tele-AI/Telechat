@@ -162,7 +162,7 @@ TeleChat模型相比同规模模型在评测效果方面也有较好的表现，
 >>> os.environ["CUDA_VISIBLE_DEVICES"] = '0'
 >>> tokenizer = AutoTokenizer.from_pretrained('../models/12B', trust_remote_code=True)
 >>> model = AutoModelForCausalLM.from_pretrained('../models/12B', trust_remote_code=True, device_map="auto", torch_dtype=torch.float16)
->>> generate_config = GenerationConfig.from_pretrained('../models/7B')
+>>> generate_config = GenerationConfig.from_pretrained('../models/12B')
 >>> question="生抽与老抽的区别？"
 >>> answer, history = model.chat(tokenizer = tokenizer, question=question, history=[], generation_config=generate_config, stream=False)
 >>> print(answer)
