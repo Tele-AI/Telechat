@@ -3,12 +3,12 @@ import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer, GenerationConfig
 
 os.environ["CUDA_VISIBLE_DEVICES"] = '0'
-PATH = '../models/7B'
+PATH = '../models/12B'
 
 
 def main():
     # 加载模型相关
-    tokenizer = AutoTokenizer.from_pretrained(PATH)
+    tokenizer = AutoTokenizer.from_pretrained(PATH,trust_remote_code=True)
     model = AutoModelForCausalLM.from_pretrained(PATH, trust_remote_code=True, device_map="auto",
                                                  torch_dtype=torch.float16)
     generate_config = GenerationConfig.from_pretrained(PATH)

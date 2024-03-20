@@ -1,0 +1,14 @@
+{
+  "max_length": 8192,
+  "do_sample": false,
+  "use_cache": true,
+  "temperature": 0.3,
+  "top_k": 5,
+  "top_p": 0.85,
+  "repetition_penalty": 1.01,
+  "pad_token_id": 3,
+  "bos_token_id": 1,
+  "eos_token_id": 2,
+  "user_token_id": 20,
+  "bot_token_id": 21
+}

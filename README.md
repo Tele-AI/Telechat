@@ -23,14 +23,18 @@
 - [声明、协议、引用](#声明协议引用)
 
 # 最新动态
-- 近期开源12B版本模型（待开放）
+- 2024.3.20 开源12B版本chat模型及量化版本
 - 2024.1.11 开源1T中文数据集
 - 2024.1.10 开源7B版本chat模型及其量化版本
 
 # 模型介绍
 ### 星辰语义大模型-TeleChat
-- 星辰语义大模型TeleChat是由中电信人工智能科技有限公司研发训练的大语言模型，采用1.5万亿 Tokens中英文高质量语料进行训练。
-- 本次开源了对话模型**TeleChat-7B-bot**，以及其`huggingface`格式的权重文件。此外，我们还开源了7B模型的int8和int4量化版本。
+- 星辰语义大模型TeleChat是由中电信人工智能科技有限公司研发训练的大语言模型，其中7B模型基座采用1.5万亿 Tokens中英文高质量语料进行训练，12B模型基座采用3万亿 Tokens中英文高质量语料进行训练。
+- 我们开源了对话模型**TeleChat-7B-bot**与**TeleChat-12B-bot**，以及其`huggingface`格式的权重文件。此外，我们还开源了7B、12B模型的int8和int4量化版本。
+- **TeleChat-12B-bot**在模型结构、训练数据、训练方法等方面进行了改进，在通用问答和知识类、代码类、数学类榜单上相比**TeleChat-7B-bot**均有大幅提升。
+  - 在模型结构方面，我们使用小规模的模型尝试多种模型结构的组合，选择最优结构。相比**TeleChat-7B-bot**模型，**TeleChat-12B-bot**模型采用了词嵌入层与输出层解耦的结构，将词嵌入层和输出lm head层参数分开，有助于增强训练稳定性和收敛性。
+  - 在训练数据方面，我们收集了覆盖书籍、百科、新闻、政务、法律、医药、专利、论文、数学、代码等诸多方面的大量中英文数据；通过优化数据清洗策略大幅提升数据的文本干净度、观点无偏性、内容有效性、格式规范性。
+  - 在训练方法方面，我们使用科学数据配比学习与课程学习的方法，使用小参数模型在多种数据配比的数据上拟合，得到对各个数据集难度的先验估计；训练过程中每隔一段时间自动化评估当前模型在所有数据集上的loss，以及在评测集上的生成效果，动态提升较难学习的数据集权重，保证模型在各个数据集上都有较佳的拟合效果。
 
 ### 模型结构
 
@@ -39,11 +43,12 @@
 - **位置编码**：我们使用 [Rotary Embedding](https://arxiv.org/pdf/2104.09864.pdf) 的位置编码方法，该方法将相对位置信息依赖集成到 self-attention 中，并且具有较好的位置外推性。Rotary Embedding还可以较好地与Flash-Attention v2 配合使用，将模型的训练速度提升约20%。
 - **激活函数**：我们使用 [SwiGLU](https://arxiv.org/pdf/2002.05202.pdf) 激活函数来替代GELU激活函数 , 为了减少计算量，将`ffn_hidden_size`设置为小于原始SwiGLU中的4倍隐藏层大小。
 - **层标准化**: 基于 [RMSNorm](https://arxiv.org/abs/1910.07467) 的 Pre-Normalization。
+- **词嵌入层与输出层解耦**：我们将**TeleChat-12B-bot**的词嵌入层和输出lm head层参数分开，有助于增强训练稳定性和收敛性。
 
 
-|     | layer_num | hidden_size | ffn_hidden_size | head_num | 是否使用embed-layernorm |
+|     | layer_num | hidden_size | ffn_hidden_size | head_num | tie_word_embeddings |
 |-----| --------- | ----------- | --------------- | -------- | ----------------------- |
-| 7B  | 30        | 4096        | 12288           | 32       | 否                      |
+| 7B  | 30        | 4096        | 12288           | 32       | 是                      |
 | 12B  | 38        | 5120        | 12288           | 32       | 否                      |
 
 ---
@@ -57,11 +62,14 @@
 
 本次发布版本和下载链接见下表
 
-| 模型版本  | 下载链接           |
-|---------| ----------------- |
-| 7B-FP16 | [TeleChat-FP16](https://huggingface.co/Tele-AI/Telechat-7B) |
-| 7B-int8 | [TeleChat-int8](https://huggingface.co/Tele-AI/Telechat-7B-int8) |
-| 7B-int4 | [TeleChat-int4](https://huggingface.co/Tele-AI/Telechat-7B-int4) |
+| 模型版本     | 下载链接                                                                  |
+|----------|-----------------------------------------------------------------------|
+| 7B-FP16  | [TeleChat-7B-FP16](https://huggingface.co/Tele-AI/Telechat-7B)        |
+| 7B-int8  | [TeleChat-7B-int8](https://huggingface.co/Tele-AI/Telechat-7B-int8)   |
+| 7B-int4  | [TeleChat-7B-int4](https://huggingface.co/Tele-AI/Telechat-7B-int4)   |
+| 12B-FP16 | [TeleChat-12B-FP16](https://huggingface.co/Tele-AI/TeleChat-12B)      |     
+| 12B-int8 | [TeleChat-12B-int8](https://huggingface.co/Tele-AI/TeleChat-12B-int8) |  
+| 12B-int4 | [TeleChat-12B-int4](https://huggingface.co/Tele-AI/TeleChat-12B-int4) | 
 
 **镜像下载**
 为了便于大家快速上手，我们提供了可运行的环境镜像，下载地址：[镜像下载](https://cloud.189.cn/web/share?code=vQFJRf7JBfmq) （访问码：ona6）
@@ -126,19 +134,19 @@ TeleChat模型相比同规模模型在评测效果方面也有较好的表现，
 
 ## 评测结果如下
 
-| Model               |   MMLU   |  C-Eval  |  CMMLU |  AGIEval  | GAOKAO  | GSM8K   |   MATH   | HumanEval |   CSL   | CHID   | EPRSTMT |
-|:--------------------|:--------:|:--------:|:------:|:--------:|:------: |:-------:|:--------:|:----------:|:-----:|:----:|:-------:|
-|                     |  5-shot  |  5-shot  | 5-shot | zero-shot | zero-shot|4-shot   |  4-shot  |zero-shot|  zero-shot | zero-shot |zero-shot |
-| LLaMA2-7B-chat      |   46.2   |   31.9   | 31.5   |    28.5   |   16.1  | 26.3    |   3.9    |   12.2    |   58.8  |   44.1  |   57.5    |
-| LLaMA2-13B-chat     |   54.6   |   36.2   | 38.7   |    32.3   |   18.6  | 29.6    |   5.0    |   18.9    |   61.2  |   48  |   59.4   |
-| ChatGLM2-6B-chat    |   45.9   |   52.6   |  49.3  |    39     |   46.4  | 28.8    |   6.5    |    11     |   61.2  |   57.9  |   71.2    |
-| ChatGLM3-6B-chat    |   51.9   |   53.8   |   54   |    38.9   |   49.3   | 56.7    |   18.7    |   61     |   65.6  |   63.4  |  85    |
-| InternLM-7B-chat    |   52   |   54.1     |  52.6  |    43.7   |   45.8   | 34.6    |   5.6    |   12.8    |    70  |   79.7 |   88.8   |
-| Baichuan2-7B-chat   |   52.8   |   55.6   | 54     |    35.3   |   39.7    | 32.8    |   6    |   13.4    |   60  |   75.2  |  87.5    |
-| Baichuan2-13B-chat  |   57   |   56.7     | 58.4   |    40     |   51.4    | 55.3    |   8.6   |   17.7    |   63.1  |   78.2  |  87.5    |
-| Qwen-7B-chat        |   56.6   |   59.3   | 59.5   |    41.3   |   63.3   | 52.5    |   10.3   |   26.2    |   63.1  |   72.3  |   88.8    |
-| Qwen-14B-chat       |   66.4   |   71.7   | 70.0   |    47.3   |   76.5  | 61    |   26.8   |   36.6    |   55.6    |   72.3  |   91.2    |
-| TeleChat-7B-chat    |   60.5   |   64.6   | 64.3   |    46.8   |  59   |  36.7   |   10.3   |   20.1    | 66.81 |  88.0  |   87.5    |
+| Model               |   MMLU   | C-Eval | CMMLU  |  AGIEval  |  GAOKAO   | GSM8K  |  MATH  | HumanEval |    CSL    |   CHID    | EPRSTMT  |  BBH   | HellaSwag |
+|:--------------------|:--------:|:------:|:------:|:---------:|:---------:|:------:|:------:|:---------:|:---------:|:---------:|:--------:|:------:|:---------:|
+|                     |  5-shot  | 5-shot | 5-shot | zero-shot | zero-shot | 4-shot | 4-shot | zero-shot | zero-shot | zero-shot |zero-shot | 3-shot | zero-shot |
+| LLaMA2-7B-chat      |   46.2   |  31.9  |  31.5  |   28.5    |   16.1    |  26.3  |  3.9   |   12.2    |   58.8    |   44.1    |   57.5   |  35.6  |   74.1    |
+| LLaMA2-13B-chat     |   54.6   |  36.2  |  38.7  |   32.3    |   18.6    |  29.6  |  5.0   |   18.9    |   61.2    |   48.0    |   59.4   |  40.2  |   78.2    |
+| ChatGLM2-6B-chat    |   45.9   |  52.6  |  49.3  |   39.0    |   46.4    |  28.8  |  6.5   |   11.0    |   61.2    |   57.9    |  71.2    |  32.7  |   57.0    |
+| ChatGLM3-6B-chat    |   51.9   |  53.8  |   54   |   38.9    |   49.3    |  56.7  |  18.7  |    61     |   65.6    |   63.4    |    85    |  44.6  |   62.7    |
+| Baichuan2-7B-chat   |   52.8   |  55.6  |  54.0  |   35.3    |   39.7    |  32.8  |   6    |   13.4    |    60     |   75.2    |   87.5   |  35.8  |  61.6     | 
+| Baichuan2-13B-chat  |    57    |  56.7  |  58.4  |    40     |   51.4    |  55.3  |  8.6   |   17.7    |   63.1    |   78.2    |   87.5   |  49.9  |   66.9    |
+| Qwen-7B-chat        |   56.6   |  59.3  |  59.5  |   41.3    |   63.3    |  52.5  |  10.3  |   26.2    |   63.1    |   72.3    |   88.8   |  46.9  |   59.9    |
+| Qwen-14B-chat       |   66.4   |  71.7  |  70.0  |   47.3    |   76.5    |  61.0  |  26.8  |   36.6    |   55.6    |   72.3    |   91.2   |  58.0  | 65.2      |
+| TeleChat-7B-chat    | **60.5** |  **64.6**  |  **64.3**  |   **46.8**    |    **59**     |  **36.7**  |  **10.3**  |   **20.1**    |   **66.8**    |   **88.0**    |   **87.5**   |  **19.5**  |  **36.7**     |
+| TeleChat-12B-chat   |   **73.3**   |  **66.6**  |  **74.2**  |   **51.7**    |   **53.1**    |  **57.2**  |  **16.0**  |   **22.0**    |   **60.6**    |   **83.2**    |   **86.3**   |  **52.2**  |   **71.5**    | 
 
 说明：CMMLU、AGIEval、GAOKAO、CSL、CHID、EPRSTMT均基于[OpenCompass](https://github.com/open-compass/OpenCompass/)平台提供的评测方法进行评估，而对于对比模型，我们同时参考了官方汇报结果和OpenCompass结果。我们使用了自己的评测脚本评测MMLU与CEVAL榜单，具体方法见`evaluation/`文件夹。
 
@@ -152,21 +160,17 @@ TeleChat模型相比同规模模型在评测效果方面也有较好的表现，
 >>> import torch
 >>> from transformers import AutoModelForCausalLM, AutoTokenizer, GenerationConfig
 >>> os.environ["CUDA_VISIBLE_DEVICES"] = '0'
->>> tokenizer = AutoTokenizer.from_pretrained('../models/7B')
->>> model = AutoModelForCausalLM.from_pretrained('../models/7B', trust_remote_code=True, device_map="auto", torch_dtype=torch.float16)
->>> generate_config = GenerationConfig.from_pretrained('../models/7B')
+>>> tokenizer = AutoTokenizer.from_pretrained('../models/12B', trust_remote_code=True)
+>>> model = AutoModelForCausalLM.from_pretrained('../models/12B', trust_remote_code=True, device_map="auto", torch_dtype=torch.float16)
+>>> generate_config = GenerationConfig.from_pretrained('../models/12B')
 >>> question="生抽与老抽的区别？"
 >>> answer, history = model.chat(tokenizer = tokenizer, question=question, history=[], generation_config=generate_config, stream=False)
 >>> print(answer)
-生抽和老抽是两种不同的酱油，它们的区别如下：
- 
-1. 原料不同：生抽是用大豆、小麦等谷物为原料制成的；而老抽则是用豆酱、面酱等发酵后的调味品为原料制成的。
- 
-2. 制作工艺不同：生抽是通过将大豆浸泡在水中，然后经过蒸煮、发酵等过程制成的；而老抽则是在生抽的基础上加入一定比例的盐、糖、味精等调料，再进行发酵制成的。
- 
-3. 口感和风味不同：生抽具有咸鲜的味道，口感比较清爽；而老抽则具有特殊的香味和味道，口感相对较重。
- 
-总的来说，生抽和老抽都是酱油的不同种类，它们在原料、制作工艺和口感等方面都有所不同。
+生抽和老抽是两种不同的酱油，它们在风味、色泽和用途上都有所区别。
+
+1. 颜色：生抽的颜色比较淡，而老抽的颜色较深。生抽的颜色呈红褐色或棕红色，而老抽的颜色则呈棕黑色。
+
+2. 味道：生抽具有鲜美的咸味和微甜的味浅，而老抽浓郁，颜色较深。根据个人口味和烹饪需求选择不同的酱油类型可以获得更好的口感和菜肴效果。
 ```
 
 
@@ -480,47 +484,63 @@ x=12
 
 以下是一些性能测试供参考。
 
-（1）deepspeed-lora最小消耗V100和A100卡数，最大训练长度，训练速度（ samples/s）
-
-| 模型大小 | NVIDIA卡型号 | gpu数 | 最长训练长度 | 训练速度 | 参数设置 | 
-| :----: | :----: | :----: | :----: | :----: | :----: |
-| 7B | V100-32G |  单卡	| 5120 | 0.084 | flash-attn关闭，zero-3，offload，gradient-checkpointing |
-| 7B | A100-40G	| 单卡	| 18432	| 0.134 |	flash-attn开启，zero-3，offload，gradient-checkpointing |
-
-（2）全参微调deepspeed版本，单机8卡V100和A100，最大训练长度，训练速度（ samples/s）
+全参微调deepspeed版本，单机8卡A100，训练速度参考（ samples/s）
 
 | 模型大小 | NVIDIA卡型号| 最长训练长度 | 训练速度 | 参数设置 | 
 | :----: | :----: | :----: | :----: | :----: |
-| 7B | 单机8卡V100-32G  |	5120 |	0.529 |	flash-attn关闭，zero-3，offload，gradient-checkpointing |
-| 7B | 单机8卡A100-40G	| 18432	| 0.696	| flash-attn开启，zero-3，offload，gradient-checkpointing |
+| 7B | 单机8卡A100-40G	| 2048	| 8.86	| flash-attn开启，zero-3，gradient-checkpointing |
+| 7B | 单机8卡A100-40G	| 4096	| 4.88	| flash-attn开启，zero-3，gradient-checkpointing |
+| 12B | 单机8卡A100-40G  |	2048 |	5.24 |	flash-attn开启，zero-3，gradient-checkpointing |
+| 12B | 单机8卡A100-40G  |	4096 |	2.90 |	flash-attn开启，zero-3，gradient-checkpointing |
 
-（3）全参微调deepspeed版本，单机8卡A100，2048训练长度，训练速度（ samples/s）
+## 数据处理
+为了方便数据配比，解耦了数据处理和模型训练，数据权重配比文件如**data.json**所示，json字典中key为读取数据的路径，value为训练时数据的权重。单轮、多轮数据格式如样例数据所示
+```shell
+{
+  "datas/single_turn_example.jsonl": 2.0,
+  "datas/multi_turn_example.jsonl": 1.0
+}
+```
+运行**process_data.py**即可将文件处理成tokens，并保存。其中**data_output_path/train_data.pt**保存处理后的文件。
 
-| 模型大小 | NVIDIA卡型号| 训练长度 | 训练速度 | 参数设置 | 
-| :----: | :----: | :----: | :----: | :----: |
-| 7B | 单机8卡A100-40G	| 2048	| 8.866	| flash-attn开启，zero-3，gradient-checkpointing |
+* 数据通过**data_path**读取，最终拼接生成**num_samples**个**max_seq_len**长度的sample进行训练。如样例所示，假设**datas/single_turn_example.jsonl**和**datas/multi_turn_example.jsonl**各有1000条samples，配比过后数据池中则总共包含3000条samples。在数据拼接过程中，程序会不断遍历数据池，尽可能将数据拼接到4096长度（不够就左padding），直至生成到num_samples的个数。因此，每个sample中会包含多条拼接而成的数据。
+* process_method选择**single**或**multiple**单进程或多进程处理数据。
+
+```python
+python -u process_data.py \
+   --data_path data.json \ # 数据配比文件路径
+   --tokenizer_path ../../models/12B \ # 模型/tokenzier路径
+   --data_output_path $DATA_OUTPUT_PATH \ # 处理后数据保存地址
+   --max_seq_len $MAX_LEN \ # 数据长度
+   --num_samples $NUM_SAMPLES \ # 最终生成拼接后的数据数量
+   --num_workers 10 \ # 多进程个数
+   --process_method multiple \ # 多进程&单进程处理
+   --seed 42
+```
 
 ## 单机训练
-以下是TeleChat-7B单机微调的样例脚本。其中训练数据为1000条单轮样例数据，为了测试使用，不保证效果。
+以下是TeleChat-12B单机微调的样例脚本。其中训练数据如**data.json**所示，为了测试使用，不保证效果。
 ```shell
 deepspeed --master_port 29500 main.py \
-   --data_path ../../example_datas/single_turn_example.jsonl  \
-   --model_name_or_path ../../models/7B \
+   --data_path ${DATA_OUTPUT_PATH}/train_data.pt  \ # tokenzie后的数据文件
+   --model_name_or_path ../../models/12B \
    --with_loss_mask \
-   --data_output_path /tmp/data_files/ \
    --per_device_train_batch_size 1 \
-   --max_seq_len 2048 \
-   --learning_rate 2e-5 \
-   --weight_decay 0. \
+   --max_seq_len 4096 \
+   --learning_rate 3e-5 \
+   --weight_decay 0.0001 \
    --num_train_epochs 1 \
-   --gradient_accumulation_steps 8 \
+   --gradient_accumulation_steps 4 \
    --lr_scheduler_type cosine \
+   --precision fp16 \ # 训练精度，fp16或bf16
+   --warmup_proportion 0.1 \ 
    --gradient_checkpointing \
-   --warmup_proportion 0.1 \
+   --offload \
    --seed 1233 \
-   --zero_stage 3 \
-   --deepspeed \
-   --output_dir output
+   --zero_stage $ZERO_STAGE \ 
+   --save_steps 10 \
+   --deepspeed \ 
+   --output_dir $OUTPUT # 输出路径 
 ```
 
 ## 多机训练
@@ -529,23 +549,25 @@ deepspeed --master_port 29500 main.py \
 
 ```shell
 deepspeed --master_port 29500 --hostfile=my_hostfile main.py \
-   --data_path ../../example_datas/single_turn_example.jsonl  \
-   --model_name_or_path ../../models/7B \
+   --data_path ${DATA_OUTPUT_PATH}/train_data.pt  \ # tokenzie后的数据文件
+   --model_name_or_path ../../models/12B \
    --with_loss_mask \
-   --data_output_path /tmp/data_files/ \
    --per_device_train_batch_size 1 \
-   --max_seq_len 2048 \
-   --learning_rate 2e-5 \
-   --weight_decay 0. \
+   --max_seq_len 4096 \
+   --learning_rate 3e-5 \
+   --weight_decay 0.0001 \
    --num_train_epochs 1 \
-   --gradient_accumulation_steps 8 \
+   --gradient_accumulation_steps 4 \
    --lr_scheduler_type cosine \
+   --precision fp16 \ # 训练精度，fp16或bf16
+   --warmup_proportion 0.1 \ 
    --gradient_checkpointing \
-   --warmup_proportion 0.1 \
+   --offload \
    --seed 1233 \
-   --zero_stage 3 \
-   --deepspeed \
-   --output_dir output
+   --zero_stage $ZERO_STAGE \ 
+   --save_steps 10 \
+   --deepspeed \ 
+   --output_dir $OUTPUT # 输出路径 
 ```
 
 具体可以参考：[**tutorial**](./docs/tutorial.md)
@@ -670,13 +692,21 @@ TeleChat的分词算法是BBPE算法，该算法是字节级实现的分词算�
 
 - 性能方面，具体对比如下：
     
-    | NAME    | performance(samples/s) | Epochs | AMP_Type |
-    | ------- |-----------------------:| ------ | -------: |
-    | 8p-GPU(A100-40G) |                   8.86 | 5    |        - |
-    | 8p-NPU  |                    7.98 | 5    |       O2 |
-  
+    | NAME                  | performance(samples/s) | Epochs | AMP_Type |
+    |-----------------------|-----------------------:| ------ | -------: |
+    | 7B-8p-GPU(A100-40G)  |                   8.86 | 5    |        - |
+    | 7B-8p-NPU            |                    7.98 | 5    |       O2 |
+
     说明：BatchSize/per-GPU=1，zero-stage=3， seq_length=2048， gradient_accumulation_steps：4
-- TeleChat支持昇腾Atlas 800T A2训练服务器，可基于昇思MindSpore框架进行模型训练，训练所需的modeling、README、脚本已发布：[TeleChat-7B-MindSpore](https://gitee.com/mindspore/mindformers/tree/dev/research/telechat)
+
+    | NAME                 | performance(samples/s) | Epochs | AMP_Type |
+    |----------------------|-----------------------:| ------ | -------: |
+    |12B-8p-GPU(A100-40G) |                  6.85 | 5    |        - |
+    |12B-8p-NPU           |                  8.22 | 5    |       O2 |
+
+    说明：BatchSize/per-GPU=1，zero-stage=3， seq_length=1024， gradient_accumulation_steps：4
+  
+- TeleChat支持昇腾Atlas 800T A2训练服务器，可基于昇思MindSpore框架进行模型训练，训练所需的modeling、README、 脚本已发布：[TeleChat-MindSpore](https://gitee.com/mindspore/mindformers/tree/dev/research/telechat) 
 
 ### 昇腾Atlas 800T A2训练服务器+PyTorch框架:  训练、推理适配
 
