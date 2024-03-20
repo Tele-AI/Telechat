@@ -347,10 +347,10 @@ class TelechatGPTQForCausalLM(BaseGPTQForCausalLM):
             trainable=trainable
         )
 
-    def chat(self, **kwargs):
+    def chat(self, *args,**kwargs):
         """shortcut for model.chat"""
         with torch.inference_mode(), torch.amp.autocast(device_type=self.device.type):
-            return self.model.chat(**kwargs)
+            return self.model.chat(*args,**kwargs)
 
 
 __all__ = ["TelechatGPTQForCausalLM"]
