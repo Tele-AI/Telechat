@@ -194,7 +194,7 @@ def create_prompt_dataset(data_path,
             results = pool.map(partial_process, [i for i in range(num_workers)])
         combined_results = list(chain.from_iterable(results))
     else:
-        combined_results = process(0, train_datasets, tokenizer, max_seq_len, num_workers, 0, args)
+        combined_results = process(0, train_datasets, tokenizer, max_seq_len, 0, num_samples, args)
     train_dataset = PromptDataset(combined_results)
     torch.save(train_dataset, train_fname)
 
