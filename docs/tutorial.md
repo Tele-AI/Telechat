@@ -8,7 +8,7 @@
 
 ### 镜像下载
 
-为了便于大家快速上手，我们提供了可运行的环境镜像，下载地址：[镜像下载](https://cloud.189.cn/t/EbAriaQfa2mm) （访问码：2uik）
+为了便于大家快速上手，我们提供了可运行的环境镜像，下载地址：[镜像下载](https://cloud.189.cn/web/share?code=vQFJRf7JBfmq) （访问码：ona6）
 
 ### 模型权重下载
 
