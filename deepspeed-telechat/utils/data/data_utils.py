@@ -19,6 +19,7 @@ import random
 from multiprocessing import Pool
 from functools import partial
 from itertools import chain
+import glob
 
 def get_raw_dataset(dataset_name, output_path, seed):
     return raw_datasets.TelechatDataset(output_path, seed, dataset_name)
@@ -104,11 +105,12 @@ def process_concat_data(text, tokenizer, max_seq_len, args):
     return {"input_ids": torch.tensor(sentence_ids), "attention_mask": torch.ones(len(sentence_ids))}
 
 
-def process(id, samples, tokenizer, max_seq_len, num_workers, num_samples, args):
+def process(id, samples, tokenizer, max_seq_len, num_workers, num_samples, output_path, args):
     cnt = 0
     sample_nums = num_samples
     all_lines = []
     dataset = []
+    train_fname = os.path.join(output_path, f"train_data_{id}.pt")
     while cnt < sample_nums // num_workers:
         index = id
         single_process_length = len(samples) // num_workers
@@ -158,6 +160,8 @@ def process(id, samples, tokenizer, max_seq_len, num_workers, num_samples, args)
     for line in tqdm(all_lines, desc="Convert token ids", disable=(id != 0)):
         tokens = process_concat_data(line, tokenizer, max_seq_len, args)
         dataset.append(tokens)
+    train_dataset = PromptDataset(dataset)
+    torch.save(train_dataset, train_fname)
     return dataset
 
 def create_prompt_dataset(data_path,
@@ -173,9 +177,6 @@ def create_prompt_dataset(data_path,
     Creates the dataset
     """
     os.makedirs(output_path, exist_ok=True)
-    train_fname = f"{output_path}/train_data.pt"
-    print(f"train_fname:{train_fname}")
-
     with open(data_path, "r", encoding="utf-8") as f: data_dic = json.load(f)
     train_datasets = []
     train_size = 0
@@ -190,13 +191,22 @@ def create_prompt_dataset(data_path,
         with Pool(processes=num_workers) as pool:
             partial_process = partial(process, samples=train_datasets,
                                       tokenizer=tokenizer, max_seq_len=max_seq_len,
-                                      num_workers=num_workers, num_samples=num_samples, args=args)
-            results = pool.map(partial_process, [i for i in range(num_workers)])
-        combined_results = list(chain.from_iterable(results))
+                                      num_workers=num_workers, num_samples=num_samples,
+                                      output_path=output_path, args=args)
+            pool.map(partial_process, [i for i in range(num_workers)])
     else:
-        combined_results = process(0, train_datasets, tokenizer, max_seq_len, 0, num_samples, args)
-    train_dataset = PromptDataset(combined_results)
-    torch.save(train_dataset, train_fname)
+        process(0, train_datasets, tokenizer, max_seq_len, 1, num_samples, output_path, args)
 
-
-
+def get_dataset(data_path, seed):
+    files = glob.glob(os.path.join(data_path, "train_data*.pt"))
+    assert len(files) > 0, "There is no data here!"
+    train_datasets = []
+    train_size = 0
+    for file in files:
+        train_dataset = torch.load(file)
+        train_datasets.append(train_dataset)
+        train_size += len(train_dataset)
+    train_dataset = ConcatDataset(train_datasets)
+    shuffle_idx = get_shuffle_idx(seed, train_size)
+    train_dataset = Subset(train_dataset, shuffle_idx.tolist())
+    return train_dataset

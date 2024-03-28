@@ -501,7 +501,7 @@ x=12
   "datas/multi_turn_example.jsonl": 1.0
 }
 ```
-运行**process_data.py**即可将文件处理成tokens，并保存。其中**data_output_path/train_data.pt**保存处理后的文件。
+运行**process_data.py**即可将文件处理成tokens，并保存。其中**data_output_path/train_data_{i}.pt**保存处理后的文件，**i的范围是0~num_workers**。训练时会加载路径下所有**train_data_{i}.pt**文件
 
 * 数据通过**data_path**读取，最终拼接生成**num_samples**个**max_seq_len**长度的sample进行训练。如样例所示，假设**datas/single_turn_example.jsonl**和**datas/multi_turn_example.jsonl**各有1000条samples，配比过后数据池中则总共包含3000条samples。在数据拼接过程中，程序会不断遍历数据池，尽可能将数据拼接到4096长度（不够就左padding），直至生成到num_samples的个数。因此，每个sample中会包含多条拼接而成的数据。
 * process_method选择**single**或**multiple**单进程或多进程处理数据。
@@ -522,7 +522,7 @@ python -u process_data.py \
 以下是TeleChat-12B单机微调的样例脚本。其中训练数据如**data.json**所示，为了测试使用，不保证效果。
 ```shell
 deepspeed --master_port 29500 main.py \
-   --data_path ${DATA_OUTPUT_PATH}/train_data.pt  \ # tokenzie后的数据文件
+   --data_path $DATA_OUTPUT_PATH \ # tokenzie后的数据文件存放地址
    --model_name_or_path ../../models/12B \
    --with_loss_mask \
    --per_device_train_batch_size 1 \
@@ -549,7 +549,7 @@ deepspeed --master_port 29500 main.py \
 
 ```shell
 deepspeed --master_port 29500 --hostfile=my_hostfile main.py \
-   --data_path ${DATA_OUTPUT_PATH}/train_data.pt  \ # tokenzie后的数据文件
+   --data_path $DATA_OUTPUT_PATH \ # tokenzie后的数据文件存放地址
    --model_name_or_path ../../models/12B \
    --with_loss_mask \
    --per_device_train_batch_size 1 \

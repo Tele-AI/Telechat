@@ -31,7 +31,7 @@ import json
 
 sys.path.append(
     os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
-from utils.data.data_utils import create_prompt_dataset
+from utils.data.data_utils import create_prompt_dataset, get_dataset
 from utils.utils import print_rank_0, to_device, save_hf_format, set_random_seed, get_all_reduce_mean, get_optimizer_grouped_parameters, save_zero_three_model
 from utils.ds_utils import get_train_ds_config
 from utils.module.lora import convert_linear_layer_to_lora, convert_lora_to_linear_layer, only_optimize_lora_parameters, recover_lora, mark_only_lora_as_trainable, make_model_gradient_checkpointing_compatible
@@ -291,7 +291,7 @@ def main():
     print(f"train_fname:{args.data_path}")
     assert os.path.exists(args.data_path), "Please process data first!"
     torch.distributed.barrier()
-    train_dataset = torch.load(args.data_path)
+    train_dataset = get_dataset(args.data_path, args.seed)
 
     # DataLoaders creation:
     if args.local_rank == -1:
@@ -377,7 +377,7 @@ def main():
 
                     if args.zero_stage == 3:
                     # For zero stage 3, each gpu only has a part of the model, so we need a special save function
-                        save_zero_three_model(model, tokenizer, args, f"global_step_{global_step}")
+                        save_zero_three_model(model, tokenizer, args, f"global_step_{global_step}_loss_{cur_batch_loss:.4f}")
                     print_rank_0('save successfully!', args.global_rank)
                     if args.lora_dim > 0:
                         print_rank_0('recovering lora...', args.global_rank)

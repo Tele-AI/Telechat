@@ -22,7 +22,7 @@ mkdir -p $OUTPUT
 
 python -u process_data.py \
    --data_path data.json  \
-   --tokenizer_path ../../models/12B \
+   --tokenizer_path /data2/telebloom7b/TeleChat_Versions/12B_base_1500B_hf \
    --data_output_path $DATA_OUTPUT_PATH \
    --max_seq_len $MAX_LEN \
    --num_samples $NUM_SAMPLES \
@@ -31,8 +31,8 @@ python -u process_data.py \
    --seed 42
 
 deepspeed --master_port 29500 main.py \
-   --data_path ${DATA_OUTPUT_PATH}/train_data.pt  \
-   --model_name_or_path ../../models/12B \
+   --data_path $DATA_OUTPUT_PATH  \
+   --model_name_or_path /data2/telebloom7b/TeleChat_Versions/12B_base_1500B_hf \
    --with_loss_mask \
    --per_device_train_batch_size 1 \
    --max_seq_len $MAX_LEN \
