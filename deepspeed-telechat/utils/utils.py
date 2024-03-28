@@ -107,24 +107,12 @@ def _z3_params_to_fetch(param_list):
 def save_zero_three_model(model, tokenizer, args, sub_folder=""):
     zero_stage_3 = (args.zero_stage == 3)
     os.makedirs(args.output_dir, exist_ok=True)
-    WEIGHTS_NAME = "pytorch_model_00001-of-00001.bin"
-    output_dir = os.path.join(args.output_dir, sub_folder)
-    os.makedirs(output_dir, exist_ok=True)
-    output_model_file = os.path.join(output_dir, WEIGHTS_NAME)
+    if args.global_rank == 0:
+        output_dir = os.path.join(args.output_dir, sub_folder)
+        os.makedirs(output_dir, exist_ok=True)
     model_to_save = model.module if hasattr(model, 'module') else model
 
-    index_dict = {"weight_map": {}, "metadata": {}}
-    total_size = 0
-
-
-    if not zero_stage_3:
-        if args.global_rank == 0:
-            torch.save(model_to_save.state_dict(), output_model_file)
-            for k, v in model_to_save.named_parameters():
-                if "lora_" not in k:
-                    index_dict["weight_map"][k] = WEIGHTS_NAME
-                    total_size += v.numel() * get_dtype_size(v.dtype)
-    else:
+    if zero_stage_3:
         output_state_dict = {}
         for k, v in model_to_save.named_parameters():
 
