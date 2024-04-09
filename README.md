@@ -683,7 +683,7 @@ TeleChat的分词算法是BBPE算法，该算法是字节级实现的分词算�
     | 输入1000输出100                        | 13   | 24 |
     | 输入2000输出100                        | 11   | 19 |    
     | 25组case平均                           |  13  |  18 | 
-- Telechat支持基于昇腾Atlas 300I Pro进行推理并且具备int8量化能力，用户所需的推理部署指导、推理镜像下载等、已发布：[TeleChat-7B](https://gitee.com/ascend/ModelLink/tree/br_develop_mindie/mindie_ref/mindie_llm/atb_models/pytorch/examples/telechat)
+- Telechat支持基于昇腾Atlas 300I Pro进行推理并且具备int8量化能力，用户所需的推理部署指导、推理镜像下载等、已发布：[TeleChat-7B](https://gitee.com/ascend/ModelLink/tree/bk_origin_23/mindie_ref/mindie_llm/atb_models/pytorch/examples/telechat)
 
 ### 昇腾Atlas 800T A2训练服务器+昇思MindSpore框架:  训练、推理适配
 
