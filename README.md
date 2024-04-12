@@ -62,14 +62,14 @@
 
 本次发布版本和下载链接见下表
 
-| 模型版本     | 下载链接                                                                  |
-|----------|-----------------------------------------------------------------------|
-| 7B-FP16  | [TeleChat-7B-FP16](https://huggingface.co/Tele-AI/Telechat-7B)        |
-| 7B-int8  | [TeleChat-7B-int8](https://huggingface.co/Tele-AI/Telechat-7B-int8)   |
-| 7B-int4  | [TeleChat-7B-int4](https://huggingface.co/Tele-AI/Telechat-7B-int4)   |
-| 12B-FP16 | [TeleChat-12B-FP16](https://huggingface.co/Tele-AI/TeleChat-12B)      |     
-| 12B-int8 | [TeleChat-12B-int8](https://huggingface.co/Tele-AI/TeleChat-12B-int8) |  
-| 12B-int4 | [TeleChat-12B-int4](https://huggingface.co/Tele-AI/TeleChat-12B-int4) | 
+| 模型版本   |  下载链接                                                            |  国内镜像                                                               |
+|----------|-----------------------------------------------------------------------|----------------------------------------------------------------------|
+| 7B-FP16  | [TeleChat-7B-FP16](https://huggingface.co/Tele-AI/Telechat-7B)        | [TeleChat-7B-FP16](https://hf-mirror.com/Tele-AI/Telechat-7B)        |
+| 7B-int8  | [TeleChat-7B-int8](https://huggingface.co/Tele-AI/Telechat-7B-int8)   | [TeleChat-7B-int8](https://hf-mirror.com/Tele-AI/Telechat-7B-int8)   |
+| 7B-int4  | [TeleChat-7B-int4](https://huggingface.co/Tele-AI/Telechat-7B-int4)   | [TeleChat-7B-int4](https://hf-mirror.com/Tele-AI/Telechat-7B-int4)   |
+| 12B-FP16 | [TeleChat-12B-FP16](https://huggingface.co/Tele-AI/TeleChat-12B)      | [TeleChat-12B-FP16](https://hf-mirror.com/Tele-AI/TeleChat-12B)      |
+| 12B-int8 | [TeleChat-12B-int8](https://huggingface.co/Tele-AI/TeleChat-12B-int8) | [TeleChat-12B-int8](https://hf-mirror.com/Tele-AI/TeleChat-12B-int8) |
+| 12B-int4 | [TeleChat-12B-int4](https://huggingface.co/Tele-AI/TeleChat-12B-int4) | [TeleChat-12B-int4](https://hf-mirror.com/Tele-AI/TeleChat-12B-int4) |
 
 **镜像下载**
 为了便于大家快速上手，我们提供了可运行的环境镜像，下载地址：[镜像下载](https://cloud.189.cn/web/share?code=vQFJRf7JBfmq) （访问码：ona6）
