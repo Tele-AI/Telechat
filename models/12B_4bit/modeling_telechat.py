@@ -81,7 +81,7 @@ except ImportError:
 
 class RotaryEmbedding(torch.nn.Module):
     # Extracted from: https://github.com/EleutherAI/gpt-neox
-    def __init__(self, dim, config, base=10000):
+    def __init__(self, dim, config, base=10000,precision=torch.half):
         super().__init__()
         self.config = config
         self.dim = dim
@@ -89,6 +89,7 @@ class RotaryEmbedding(torch.nn.Module):
         self.max_seq_len_cached = None
         self.cos_cached = None
         self.sin_cached = None
+        self.precision = precision
 
     def get_mscale(self, scale=1):
         if scale <= 1:
@@ -436,7 +437,7 @@ class TelechatAttention(nn.Module):
             offset = past_key.shape[0]
             seq_len += offset
 
-        cos, sin = self.rotary_emb(value_layer, dtype=value_layer.dtype)
+        cos, sin = self.rotary_emb(value_layer)
 
         query_layer, key_layer = apply_rotary_fn(query_layer, key_layer, cos, sin, offset=offset)
         if use_cache:
