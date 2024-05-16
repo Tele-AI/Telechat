@@ -54,15 +54,6 @@ def main():
         print("回答是:", answer)
         print("截至目前的聊天记录是:", history)
 
-    # base模型 直接续写演示
-
-    inputs = "hello"
-    print("输入:", inputs)
-    output = model.generate(**tokenizer(inputs, return_tensors="pt").to(model.device),
-                            generation_config=generate_config)
-    output = tokenizer.decode(output[0])
-    print("续写结果:", output)
-
 
 if __name__ == '__main__':
     main()
