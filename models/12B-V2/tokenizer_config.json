@@ -1,0 +1,40 @@
+{
+  "name_or_path": "ChinaTelecom/telechat-12b",
+  "tokenizer_class": "TelechatTokenizer",
+  "auto_map": {
+    "AutoTokenizer": [
+      "tokenization_telechat.TelechatTokenizer",
+      null
+    ]
+  },
+  "add_bos_token": false,
+  "add_eos_token": false,
+  "use_fast": false,
+  "clean_up_tokenization_spaces": false,
+  "eos_token": {
+    "__type": "AddedToken",
+    "content": "<_end>",
+    "lstrip": false,
+    "normalized": true,
+    "rstrip": false,
+    "single_word": true
+  },
+  "model_max_length": 100000000,
+  "sp_model_kwargs": {},
+  "pad_token": {
+    "__type": "AddedToken",
+    "content": "<_pad>",
+    "lstrip": false,
+    "normalized": true,
+    "rstrip": false,
+    "single_word": true
+  },
+  "unk_token": {
+    "__type": "AddedToken",
+    "content": "<_end>",
+    "lstrip": false,
+    "normalized": true,
+    "rstrip": false,
+    "single_word": true
+  }
+}

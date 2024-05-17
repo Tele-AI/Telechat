@@ -38,7 +38,7 @@
   - 在训练数据方面，我们收集了覆盖书籍、百科、新闻、政务、法律、医药、专利、论文、数学、代码等诸多方面的大量中英文数据；通过优化数据清洗策略大幅提升数据的文本干净度、观点无偏性、内容有效性、格式规范性。
   - 在训练方法方面，我们使用科学数据配比学习与课程学习的方法，使用小参数模型在多种数据配比的数据上拟合，得到对各个数据集难度的先验估计；训练过程中每隔一段时间自动化评估当前模型在所有数据集上的loss，以及在评测集上的生成效果，动态提升较难学习的数据集权重，保证模型在各个数据集上都有较佳的拟合效果。
 
-- **TeleChat-12B-v2**版本使用动态数据配比和课程学习的方法，将基座模型持续训练到3.7T数据。其对话模型在通用能力评测上提升5.5%，其中数学能力提升24.6%、翻译能力提升9%、幻觉测试提升10.3%，安全拒识、知识问答、闲聊问答等方面也有不同程度的提升。
+- **TeleChat-12B-V2**版本使用动态数据配比和课程学习的方法，针对基座模型进行了持续训练增强。其对话模型在通用能力评测上提升5.5%，其中数学能力提升24.6%、翻译能力提升9%、幻觉测试提升10.3%，安全拒识、知识问答、闲聊问答等方面也有不同程度的提升。
 
   
 
@@ -68,14 +68,15 @@
 
 本次发布版本和下载链接见下表
 
-| 模型版本     | 下载链接                                                                  |
-|----------|-----------------------------------------------------------------------|
-| 7B-FP16  | [TeleChat-7B-FP16](https://huggingface.co/Tele-AI/Telechat-7B)        |
-| 7B-int8  | [TeleChat-7B-int8](https://huggingface.co/Tele-AI/Telechat-7B-int8)   |
-| 7B-int4  | [TeleChat-7B-int4](https://huggingface.co/Tele-AI/Telechat-7B-int4)   |
-| 12B-FP16 | [TeleChat-12B-FP16](https://huggingface.co/Tele-AI/TeleChat-12B)      |     
-| 12B-int8 | [TeleChat-12B-int8](https://huggingface.co/Tele-AI/TeleChat-12B-int8) |  
-| 12B-int4 | [TeleChat-12B-int4](https://huggingface.co/Tele-AI/TeleChat-12B-int4) | 
+| 模型版本        | 下载链接                                                                  |
+|-------------|-----------------------------------------------------------------------|
+| 7B-FP16     | [TeleChat-7B-FP16](https://huggingface.co/Tele-AI/Telechat-7B)        |
+| 7B-int8     | [TeleChat-7B-int8](https://huggingface.co/Tele-AI/Telechat-7B-int8)   |
+| 7B-int4     | [TeleChat-7B-int4](https://huggingface.co/Tele-AI/Telechat-7B-int4)   |
+| 12B-FP16    | [TeleChat-12B-FP16](https://huggingface.co/Tele-AI/TeleChat-12B)      |
+| 12B-int8    | [TeleChat-12B-int8](https://huggingface.co/Tele-AI/TeleChat-12B-int8) |
+| 12B-int4    | [TeleChat-12B-int4](https://huggingface.co/Tele-AI/TeleChat-12B-int4) |
+| 12B-V2-FP16 | [TeleChat-12B-V2-FP16](https://modelscope.cn/models/TeleAI/TeleChat-12B-v2/files)   |
 
 **镜像下载**
 为了便于大家快速上手，我们提供了可运行的环境镜像，下载地址：[镜像下载](https://cloud.189.cn/web/share?code=vQFJRf7JBfmq) （访问码：ona6）
