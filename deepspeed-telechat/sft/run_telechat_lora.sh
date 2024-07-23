@@ -10,6 +10,7 @@ ZERO_STAGE=3
 MAX_LEN=4096
 NUM_SAMPLES=1000
 DATA_OUTPUT_PATH=datas/data_files
+MODEL_PATH=$1
 
 
 if [ "$OUTPUT" == "" ]; then
@@ -22,7 +23,7 @@ mkdir -p $OUTPUT
 
 python -u process_data.py \
    --data_path data.json  \
-   --tokenizer_path /data2/telebloom7b/TeleChat_Versions/12B_base_1500B_hf \
+   --tokenizer_path $MODEL_PATH \
    --data_output_path $DATA_OUTPUT_PATH \
    --max_seq_len $MAX_LEN \
    --num_samples $NUM_SAMPLES \
@@ -32,7 +33,7 @@ python -u process_data.py \
 
 deepspeed --master_port 29500 main.py \
    --data_path $DATA_OUTPUT_PATH  \
-   --model_name_or_path /data2/telebloom7b/TeleChat_Versions/12B_base_1500B_hf \
+   --model_name_or_path $MODEL_PATH \
    --with_loss_mask \
    --per_device_train_batch_size 1 \
    --max_seq_len $MAX_LEN \
