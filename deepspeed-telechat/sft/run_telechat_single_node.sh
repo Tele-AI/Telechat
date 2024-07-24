@@ -47,7 +47,7 @@ deepspeed --master_port 29500 main.py \
    --gradient_checkpointing \
    --seed 42 \
    --zero_stage $ZERO_STAGE \
-   --save_steps 10 \
+   --save_steps 100 \
    --deepspeed \
    --output_dir $OUTPUT \
    2>&1 | tee $OUTPUT/training.log
