@@ -23,6 +23,7 @@
 - [声明、协议、引用](#声明协议引用)
 
 # 最新动态
+- 2024.7.24 TeleChat-12B 支持[vllm](./service/vllm_inf)
 - 2024.6.28 开源1B版本chat模型
 - 2024.5.16 开源优化的12B版本chat模型**TeleChat-12B-V2**
 - 2024.3.20 开源12B版本chat模型及量化版本
@@ -81,9 +82,6 @@
 | 12B-int8    | [TeleChat-12B-int8](https://huggingface.co/Tele-AI/TeleChat-12B-int8) |
 | 12B-int4    | [TeleChat-12B-int4](https://huggingface.co/Tele-AI/TeleChat-12B-int4) |
 | 12B-V2-FP16 | [TeleChat-12B-V2-FP16](https://modelscope.cn/models/TeleAI/TeleChat-12B-v2/files)   |
-
-**镜像下载**
-为了便于大家快速上手，我们提供了可运行的环境镜像，下载地址：[镜像下载](https://cloud.189.cn/web/share?code=vQFJRf7JBfmq) （访问码：ona6）
 
 # 数据开源
 ### 数据介绍
