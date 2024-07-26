@@ -19,7 +19,7 @@ cd ./vllm/model_executor/models/
 ```
     "StableLmForCausalLM": ("stablelm", "StablelmForCausalLM"),
     "Starcoder2ForCausalLM": ("starcoder2", "Starcoder2ForCausalLM"),
-    "TeleChat12BForCausalLM": ("telechat", "TeleChat12BForCausalLM"),  #telechat12b
+    "TeleChat12BForCausalLM": ("telechat_12B", "TeleChat12BForCausalLM"),  #telechat12b
     "ArcticForCausalLM": ("arctic", "ArcticForCausalLM"),
     "XverseForCausalLM": ("xverse", "XverseForCausalLM"),
 ```
