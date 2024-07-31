@@ -28,7 +28,7 @@ cd ./vllm/model_executor/models/
 ### 修改模型文件里的config.json
 ```
 >>> architectures": [
->>>     "Telechat12BForCausalLM"
+>>>     "TeleChat12BForCausalLM"
 >>>     ]
 ```
 在config.json文件里添加以下行
