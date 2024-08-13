@@ -12,7 +12,7 @@ pip show vllm 找到vllm对应位置并进入
 ```
 cd ./vllm/model_executor/models/
 ```
-将此路径下的telechat.py 文件放入以上路径
+将此路径下的telechat_12B.py 文件放入以上路径
 
 ### 修改init文件
 修改同路径下的__init__.py
