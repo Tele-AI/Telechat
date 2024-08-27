@@ -6,18 +6,20 @@
 ## 资源获取
 
 
-### 镜像下载
-
-为了便于大家快速上手，我们提供了可运行的环境镜像，下载地址：[镜像下载](https://cloud.189.cn/t/EbAriaQfa2mm) （访问码：2uik）
-
 ### 模型权重下载
 
 
 | 模型版本  | 下载链接           |
 |---------| ----------------- |
-| 7B-FP16 | [TeleChat-FP16](https://huggingface.co/Tele-AI/Telechat-7B) |
-| 7B-int8 | [TeleChat-int8](https://huggingface.co/Tele-AI/Telechat-7B-int8) |
-| 7B-int4 | [TeleChat-int4](https://huggingface.co/Tele-AI/Telechat-7B-int4) |
+| 1B-FP16     | [TeleChat-1B-FP16](https://huggingface.co/Tele-AI/Telechat-1B)        |
+| 7B-FP16     | [TeleChat-7B-FP16](https://huggingface.co/Tele-AI/Telechat-7B)        |
+| 7B-int8     | [TeleChat-7B-int8](https://huggingface.co/Tele-AI/Telechat-7B-int8)   |
+| 7B-int4     | [TeleChat-7B-int4](https://huggingface.co/Tele-AI/Telechat-7B-int4)   |
+| 12B-FP16    | [TeleChat-12B-FP16](https://huggingface.co/Tele-AI/TeleChat-12B)      |
+| 12B-v2-FP16    | [TeleChat-12B-v2-FP16](https://huggingface.co/Tele-AI/TeleChat-12B-v2)      |
+| 12B-int8    | [TeleChat-12B-int8](https://huggingface.co/Tele-AI/TeleChat-12B-int8) |
+| 12B-int4    | [TeleChat-12B-int4](https://huggingface.co/Tele-AI/TeleChat-12B-int4) |
+| 12B-V2-FP16 | [TeleChat-12B-V2-FP16](https://modelscope.cn/models/TeleAI/TeleChat-12B-v2/files)   |
 
 ## 环境配置
 
