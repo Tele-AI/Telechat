@@ -79,6 +79,7 @@
 | 7B-int8     | [TeleChat-7B-int8](https://huggingface.co/Tele-AI/Telechat-7B-int8)   |
 | 7B-int4     | [TeleChat-7B-int4](https://huggingface.co/Tele-AI/Telechat-7B-int4)   |
 | 12B-FP16    | [TeleChat-12B-FP16](https://huggingface.co/Tele-AI/TeleChat-12B)      |
+| 12B-v2-FP16    | [TeleChat-12B-v2-FP16](https://huggingface.co/Tele-AI/TeleChat-12B-v2)      |
 | 12B-int8    | [TeleChat-12B-int8](https://huggingface.co/Tele-AI/TeleChat-12B-int8) |
 | 12B-int4    | [TeleChat-12B-int4](https://huggingface.co/Tele-AI/TeleChat-12B-int4) |
 | 12B-V2-FP16 | [TeleChat-12B-V2-FP16](https://modelscope.cn/models/TeleAI/TeleChat-12B-v2/files)   |
@@ -105,8 +106,6 @@ data: 单条处理后的预训练数据
 ### 数据下载
 
 huggingface下载地址：[数据下载](https://huggingface.co/datasets/Tele-AI/TeleChat-PTD)
-
-天翼云盘下载地址：[数据下载](https://cloud.189.cn/t/ia2QbaVzYf6z)（访问码：pkg8）
 
 # 效果评测
 TeleChat模型相比同规模模型在评测效果方面也有较好的表现，我们的评测集涵盖了包括MMLU、C-Eval、GAOKAO、AGIEval、CMMLU、 GSM8K、MATH、HumanEval、CHID等数据集，评测能力包括了自然语言理解、知识、数学计算和推理、代码生成等
